@@ -1,0 +1,2 @@
+# Development only; no dependencies required for installation.
+playwright>=1.45,<2

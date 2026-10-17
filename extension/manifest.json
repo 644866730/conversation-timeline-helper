@@ -1,0 +1,67 @@
+{
+  "manifest_version": 3,
+  "name": "对话时间轴助手",
+  "version": "1.4.2",
+  "description": "为 ChatGPT 网页提供固定高度、无滑条的对话时间轴，随已加载消息更新；支持旧消息定位、悬停预览、搜索和本地收藏。非官方扩展。",
+  "minimum_chrome_version": "120",
+  "homepage_url": "https://644866730.github.io/conversation-timeline-helper/",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_title": "对话时间轴助手 · 设置与诊断",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "src/page-navigation.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false,
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "src/core.js",
+        "src/loaded-index.js",
+        "src/adapter.js",
+        "src/navigation-core.js",
+        "src/navigation.js",
+        "src/preview-guard.js",
+        "src/styles.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false,
+      "world": "ISOLATED"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'"
+  },
+  "options_ui": {
+    "page": "popup/options.html",
+    "open_in_tab": true
+  }
+}

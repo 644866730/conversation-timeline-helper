@@ -1,0 +1,125 @@
+{
+  "mode": "Chromium real isolated/MAIN worlds, LOCAL DOM fixtures, MOCK Chrome APIs; not a live account",
+  "group": "all",
+  "browser": "144.0.7559.96",
+  "executedAt": "2026-10-17T16:11:27Z",
+  "passed": 23,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Idle observation never navigates, paginates or calls the helper",
+      "status": "passed",
+      "seconds": 2.4
+    },
+    {
+      "name": "Mounted node aligns its real native message directly",
+      "status": "passed",
+      "seconds": 1.26
+    },
+    {
+      "name": "Clicking previously loaded old node automatically traverses seven native pages",
+      "status": "passed",
+      "seconds": 6.51
+    },
+    {
+      "name": "Clicking a later known node automatically traverses pages forward",
+      "status": "passed",
+      "seconds": 8.61
+    },
+    {
+      "name": "Chat/Work compound user/assistant turn remounts and selects exact assistant",
+      "status": "passed",
+      "seconds": 6.39
+    },
+    {
+      "name": "Slow 2.3-second native page loading waits instead of falsely declaring completion",
+      "status": "passed",
+      "seconds": 4.17
+    },
+    {
+      "name": "Unmounted variable-height virtual list seeks via checkpoint then verifies identity",
+      "status": "passed",
+      "seconds": 2.18
+    },
+    {
+      "name": "Negative column-reverse native scroll coordinates are supported",
+      "status": "passed",
+      "seconds": 2.14
+    },
+    {
+      "name": "Only exact native Load-earlier-messages control is clicked, never sidebar decoy",
+      "status": "passed",
+      "seconds": 2.61
+    },
+    {
+      "name": "Unavailable target terminates with retry notice, no false success or cached modal",
+      "status": "passed",
+      "seconds": 3.72
+    },
+    {
+      "name": "Real MAIN/ISOLATED boundary: exact-key helper restores target without sequential pages",
+      "status": "passed",
+      "seconds": 1.25
+    },
+    {
+      "name": "Current stable keys override stale ordinal/index after a prepend",
+      "status": "passed",
+      "seconds": 1.25
+    },
+    {
+      "name": "Native compound turn seek lands on assistant within the correct shared turn",
+      "status": "passed",
+      "seconds": 1.28
+    },
+    {
+      "name": "Misleading helper acknowledgement cannot fake success; directional fallback recovers exact ID",
+      "status": "passed",
+      "seconds": 3.46
+    },
+    {
+      "name": "DOM-verified success diagnostics/storage contain no message text or identifiers",
+      "status": "passed",
+      "seconds": 1.35
+    },
+    {
+      "name": "Manual wheel cancels further extension page movement",
+      "status": "passed",
+      "seconds": 1.87
+    },
+    {
+      "name": "Escape cancels the active seek",
+      "status": "passed",
+      "seconds": 1.74
+    },
+    {
+      "name": "Cancel button stops the active seek",
+      "status": "passed",
+      "seconds": 1.7
+    },
+    {
+      "name": "Rapid second click replaces first seek; old corrections cannot steal position",
+      "status": "passed",
+      "seconds": 1.87
+    },
+    {
+      "name": "Route transition cancels seek and clears old navigation checkpoints",
+      "status": "passed",
+      "seconds": 1.99
+    },
+    {
+      "name": "Disabling the extension cancels pending positioning work",
+      "status": "passed",
+      "seconds": 1.8
+    },
+    {
+      "name": "Destroy during seek removes UI and aborts future moves",
+      "status": "passed",
+      "seconds": 1.74
+    },
+    {
+      "name": "Native pagination leaves fixed oldest/newest endpoints and zero rail scroll range",
+      "status": "passed",
+      "seconds": 6.37
+    }
+  ]
+}

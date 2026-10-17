@@ -1,0 +1,16 @@
+{
+  "version": "1.4.2",
+  "files": 28,
+  "bytes": 80128,
+  "sha256": "d29e675cad9257b4bd7c68505a60dff972a33e86db66a2be48bf77722ff48445",
+  "manifest_at_root": true,
+  "permissions_unchanged": true,
+  "site_matches_unchanged": true,
+  "no_development_key": true,
+  "all_declared_assets_present": true,
+  "license_texts_unchanged": true,
+  "navigation_algorithm_unchanged": true,
+  "no_test_files_or_private_keys": true,
+  "no_new_network_or_remote_code": true,
+  "zip_crc_ok": true
+}

@@ -1,0 +1,28 @@
+{
+  "name": "conversation-timeline-helper",
+  "version": "1.4.2",
+  "private": true,
+  "description": "为 ChatGPT 网页提供时间轴、消息搜索、本地收藏和预览位置保护的非官方扩展。",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test",
+    "test:browser": "python tests/browser_test.py",
+    "styles": "python tools/sync_styles.py",
+    "test:loaded": "python tests/loaded_browser_test.py",
+    "test:navigation": "python tests/navigation_browser_test.py",
+    "test:preview": "python tests/preview_browser_test.py"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "GCH",
+  "homepage": "https://644866730.github.io/conversation-timeline-helper/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/644866730/conversation-timeline-helper.git",
+    "directory": "extension"
+  },
+  "bugs": {
+    "url": "https://github.com/644866730/conversation-timeline-helper/issues"
+  }
+}

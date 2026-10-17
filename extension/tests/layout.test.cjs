@@ -1,0 +1,15 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),C=require('../src/core.js');
+const seq=n=>Array.from({length:n},(_,i)=>i);
+test('empty timeline occupies one viewport',()=>assert.deepEqual(C.timelineGeometry([],900).y,[]));
+test('single message is both endpoints and starts at upper padding',()=>assert.deepEqual(C.timelineGeometry([9],900).y,[16]));
+test('two messages anchor to exact top and bottom',()=>assert.deepEqual(C.timelineGeometry([0,1],900).y,[16,884]));
+test('short conversations use chronological rank, not paragraph height',()=>assert.deepEqual(C.timelineGeometry([0,100,100000],900).y,[16,450,884]));
+for(const n of [20,100,400,1000,10000])test(`${n} messages: fixed height, all unique nodes, exact endpoints`,()=>{const g=C.timelineGeometry(seq(n),900);assert.equal(g.height,900);assert.equal(g.y.length,n);assert.equal(g.y[0],16);assert.equal(g.y.at(-1),884);for(let i=1;i<n;i++)assert.ok(g.y[i]>g.y[i-1]);});
+test('older top messages are closer together than newer bottom messages',()=>{const g=C.timelineGeometry(seq(200),600);assert.ok(g.exponent>1);assert.ok(g.y[1]-g.y[0]<(g.y.at(-1)-g.y.at(-2))/5);});
+test('more messages progressively compress the old-message region',()=>{let last=Infinity;for(const n of [20,40,80,160,400]){const g=C.timelineGeometry(seq(n),600);assert.ok(g.y[1]-g.y[0]<last);last=g.y[1]-g.y[0];}});
+test('scroll/virtual layout values cannot move the fixed rank positions',()=>{const old=C.timelineGeometry(seq(20),600);assert.deepEqual(C.timelineGeometry(seq(20).map(()=>NaN),600).y,old.y);assert.deepEqual(C.timelineGeometry(seq(20).map(i=>i*10000000),600).y,old.y);});
+test('resize recomputes endpoints without overflowing',()=>{for(const h of [0,10,50,400,1080]){const g=C.timelineGeometry(seq(100),h);assert.equal(g.height,h);assert.ok(g.y.every(y=>y>=0&&y<=h));}});
+test('dense dots remain circular with adaptive diameters',()=>{const g=C.timelineGeometry(seq(200),600);assert.ok(g.diameters.every(v=>v>=2.5&&v<=12));assert.ok(g.diameters[0]<g.diameters.at(-1));});
+test('nearest pointer picking ignores overlapping hit boxes',()=>{assert.equal(C.nearestIndex([16,16.1,16.4,20],16.3),2);assert.equal(C.nearestIndex([16,16.1,16.4,20],19.8),3);assert.equal(C.nearestIndex([16,50],0),0);assert.equal(C.nearestIndex([16,50],99),1);});
+test('nearest pointer picking handles empty/invalid inputs',()=>{assert.equal(C.nearestIndex([],1),-1);assert.equal(C.nearestIndex([1],NaN),-1);assert.equal(C.nearestIndex([1],200),0);});

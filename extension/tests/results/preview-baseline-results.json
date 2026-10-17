@@ -1,0 +1,21 @@
+{
+  "mode": "LOCAL Chromium fixtures; real isolated worlds; mocked Chrome APIs; not a live account",
+  "version": "1.4.1 baseline",
+  "browser": "144.0.7559.96",
+  "passed": 0,
+  "failed": 2,
+  "tests": [
+    {
+      "name": "Close button overlapping upper timeline dots reaches preview, not early message",
+      "status": "failed",
+      "error": "Close button was intercepted by the timeline",
+      "seconds": 3.24
+    },
+    {
+      "name": "Immediate native autofocus to stale old attachment is corrected to actual viewport",
+      "status": "failed",
+      "error": "{'before': 13885, 'after': 436, 'status': {'ok': True, 'version': '1.4.1', 'enabled': True, 'loaded': 120, 'users': 60, 'assistants': 60, 'visible': 120, 'matched': 120, 'adapter': 'legacy', 'theme': 'light', 'persistentBookmarks': True, 'storageError': False, 'history': {'stage': 'observing', 'complete': False, 'indexed': 120, 'mounted': 120, 'summary': '已加载过 120 条 · 网页当前挂载 120 条', 'mode': 'loaded-only'}, 'navigation': {'stage': 'idle', 'method': '', 'steps': 0, 'reason': '', 'durationMs': 0}, 'diagnostics': {'adapter': 'legacy', 'counts': {'chat-work-user': 0, 'chat-work-assistant': 0, 'chat-work-search-user': 0, 'chat-work-search-assistant': 0, 'data-turn-user': 0, 'data-turn-assistant': 0, 'legacy-user': 60, 'legacy-assistant': 60, 'user-bubble': 0}, 'errors': [], 'users': 60, 'assistants': 60, 'stableIdentities': 120, 'textFallbacks': 0, 'domMessages': 120, 'indexMode': 'loaded-only', 'remembered': 120, 'inferredOrderBatches': 0, 'textTruncated': 0, 'scanCount': 6, 'lastScanMs': 10.7}, 'limits': ['仅本次页面实际加载过的消息；刷新或切换会话后重新建立', '点击已加载节点时按需自动翻页定位；失败提示重试，不弹缓存正文', '每条正文最多120000字符；超出总缓存预算时仅保留摘要与节点'], 'panelOpen': False}}",
+      "seconds": 2.65
+    }
+  ]
+}

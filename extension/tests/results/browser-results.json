@@ -1,0 +1,301 @@
+{
+  "mode": "Local DOM simulation; chrome APIs mocked; location injected",
+  "browser": "144.0.7559.96",
+  "executedAt": "2026-10-17T16:10:48Z",
+  "passed": 57,
+  "failed": 0,
+  "notValidated": [
+    "Native extension installation/runtime",
+    "Real logged-in ChatGPT UI",
+    "Account-specific rollout variants",
+    "Real storage persistence across browser restart"
+  ],
+  "pageErrors": [],
+  "tests": [
+    {
+      "name": "Chat/Work detection and deduplication",
+      "status": "passed",
+      "seconds": 0.195
+    },
+    {
+      "name": "Include-assistant preference applies immediately",
+      "status": "passed",
+      "seconds": 0.086
+    },
+    {
+      "name": "Legacy role-attribute layout",
+      "status": "passed",
+      "seconds": 0.065
+    },
+    {
+      "name": "Section data-turn layout",
+      "status": "passed",
+      "seconds": 0.06
+    },
+    {
+      "name": "Non-text assistant turn",
+      "status": "passed",
+      "seconds": 0.08
+    },
+    {
+      "name": "Bubble fallback without guessing assistant roles",
+      "status": "passed",
+      "seconds": 0.058
+    },
+    {
+      "name": "Overlapping new and old role markers are deduplicated",
+      "status": "passed",
+      "seconds": 0.061
+    },
+    {
+      "name": "Compound wrapper gets distinct user and assistant targets",
+      "status": "passed",
+      "seconds": 0.073
+    },
+    {
+      "name": "Unknown role fails closed",
+      "status": "passed",
+      "seconds": 0.067
+    },
+    {
+      "name": "Hidden branches and composer drafts are excluded",
+      "status": "passed",
+      "seconds": 0.056
+    },
+    {
+      "name": "Preview text is not interpreted as HTML; action toolbar excluded",
+      "status": "passed",
+      "seconds": 0.071
+    },
+    {
+      "name": "Custom CSS selectors recover unknown layouts",
+      "status": "passed",
+      "seconds": 0.062
+    },
+    {
+      "name": "Invalid selector reports an error without disabling built-ins",
+      "status": "passed",
+      "seconds": 0.053
+    },
+    {
+      "name": "Streaming updates retain a single native message identity",
+      "status": "passed",
+      "seconds": 0.656
+    },
+    {
+      "name": "MutationObserver indexes newly appended turns",
+      "status": "passed",
+      "seconds": 0.397
+    },
+    {
+      "name": "Chinese multi-term search, clear and no-result state",
+      "status": "passed",
+      "seconds": 0.168
+    },
+    {
+      "name": "Nested scroll container navigation",
+      "status": "passed",
+      "seconds": 0.263
+    },
+    {
+      "name": "Document-level scroll fallback",
+      "status": "passed",
+      "seconds": 0.215
+    },
+    {
+      "name": "Active reading marker and previous-message navigation",
+      "status": "passed",
+      "seconds": 0.401
+    },
+    {
+      "name": "Bookmark restore after controller restart (MOCK storage)",
+      "status": "passed",
+      "seconds": 0.231
+    },
+    {
+      "name": "Bookmarks isolated by conversation",
+      "status": "passed",
+      "seconds": 0.182
+    },
+    {
+      "name": "Star filter responds to adding and removing bookmarks",
+      "status": "passed",
+      "seconds": 0.264
+    },
+    {
+      "name": "Storage failure rolls back optimistic state",
+      "status": "passed",
+      "seconds": 0.125
+    },
+    {
+      "name": "No stable conversation ID means memory-only bookmarks",
+      "status": "passed",
+      "seconds": 0.147
+    },
+    {
+      "name": "URL-before-DOM SPA race suppresses stale old turns",
+      "status": "passed",
+      "seconds": 0.077
+    },
+    {
+      "name": "React-style reused nodes detected after identity replacement",
+      "status": "passed",
+      "seconds": 0.075
+    },
+    {
+      "name": "400 prompts keep 400 nodes in one fixed viewport with no slider",
+      "status": "passed",
+      "seconds": 0.451
+    },
+    {
+      "name": "Toggle shortcut works even with directory search focused",
+      "status": "passed",
+      "seconds": 0.59
+    },
+    {
+      "name": "Composer not hijacked and keyboard preference respected",
+      "status": "passed",
+      "seconds": 0.206
+    },
+    {
+      "name": "Automatic theme, override, left dock and isolated font",
+      "status": "passed",
+      "seconds": 0.119
+    },
+    {
+      "name": "Hover preview and its disable preference",
+      "status": "passed",
+      "seconds": 0.169
+    },
+    {
+      "name": "Right-clicking a single rail node toggles its bookmark",
+      "status": "passed",
+      "seconds": 0.151
+    },
+    {
+      "name": "Long-press bookmarks without also triggering a jump",
+      "status": "passed",
+      "seconds": 1.593
+    },
+    {
+      "name": "Scroll changes do not rebuild directory DOM",
+      "status": "passed",
+      "seconds": 0.18
+    },
+    {
+      "name": "Loaded-node retention, detached host and reinjection recovery",
+      "status": "passed",
+      "seconds": 0.459
+    },
+    {
+      "name": "Enable/disable preference recovers cleanly",
+      "status": "passed",
+      "seconds": 0.116
+    },
+    {
+      "name": "350px viewport stays within screen bounds",
+      "status": "passed",
+      "seconds": 0.113
+    },
+    {
+      "name": "Original UI: 24px track at top60/right15, no toolbar or count",
+      "status": "passed",
+      "seconds": 0.149
+    },
+    {
+      "name": "Original UI: 12px gray dots and exact light/dark green active rings",
+      "status": "passed",
+      "seconds": 0.533
+    },
+    {
+      "name": "Original UI: amber dot fill, no extra star badge or success toast",
+      "status": "passed",
+      "seconds": 0.176
+    },
+    {
+      "name": "Original UI: plain-text 3-line tooltip, 12px type, no header/footer",
+      "status": "passed",
+      "seconds": 0.242
+    },
+    {
+      "name": "Fixed rail pins endpoints and compresses old top nodes more densely",
+      "status": "passed",
+      "seconds": 0.446
+    },
+    {
+      "name": "Newest endpoint is directly keyboard-accessible without scrolling the rail",
+      "status": "passed",
+      "seconds": 1.842
+    },
+    {
+      "name": "Original UI: wheel on timeline scrolls only the conversation, never the rail",
+      "status": "passed",
+      "seconds": 1.03
+    },
+    {
+      "name": "Original UI: long-press progress and >6px movement cancellation",
+      "status": "passed",
+      "seconds": 0.827
+    },
+    {
+      "name": "Original UI: empty conversation has no decorative blank rail",
+      "status": "passed",
+      "seconds": 0.068
+    },
+    {
+      "name": "Original UI: single dot starts at 16px track padding",
+      "status": "passed",
+      "seconds": 0.055
+    },
+    {
+      "name": "Original UI: data-color-mode dark theme recognition",
+      "status": "passed",
+      "seconds": 0.075
+    },
+    {
+      "name": "Original UI: clicking a dot adds no non-upstream message outline",
+      "status": "passed",
+      "seconds": 0.166
+    },
+    {
+      "name": "Diagnostic payload contains no conversation text or raw IDs",
+      "status": "passed",
+      "seconds": 0.061
+    },
+    {
+      "name": "Destroy removes observers, timers and host",
+      "status": "passed",
+      "seconds": 0.827
+    },
+    {
+      "name": "Popup status and individual settings keys (MOCK API)",
+      "status": "passed",
+      "seconds": 0.04
+    },
+    {
+      "name": "Popup selector validation prevents invalid persistence",
+      "status": "passed",
+      "seconds": 0.225
+    },
+    {
+      "name": "Popup destructive clear asks confirmation and preserves settings",
+      "status": "passed",
+      "seconds": 0.1
+    },
+    {
+      "name": "Popup safe JSON serialization (actual downloads not attempted)",
+      "status": "passed",
+      "seconds": 0.093
+    },
+    {
+      "name": "Popup remains configurable when no content script is connected",
+      "status": "passed",
+      "seconds": 0.056
+    },
+    {
+      "name": "No uncaught page exceptions",
+      "status": "passed",
+      "seconds": 0.0
+    }
+  ]
+}
