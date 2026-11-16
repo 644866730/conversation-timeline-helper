@@ -12,9 +12,7 @@ import sys
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-EXCLUDED_DIRS = {'.git', '.venv', 'venv', 'node_modules', '__pycache__',
-                 '.pytest_cache', '.mypy_cache', '.ruff_cache', 'htmlcov',
-                 'build', 'dist', 'output', 'outputs'}
+EXCLUDED_DIRS = {'.git', '.venv', 'venv', 'node_modules', '__pycache__'}
 EXCLUDED_SUFFIXES = {'.pyc', '.pyo', '.zip', '.crx', '.pem', '.key'}
 
 def main() -> int:
@@ -43,13 +41,9 @@ def main() -> int:
                     continue
                 if any(part in EXCLUDED_DIRS for part in rel.parts):
                     continue
-                if path.suffix.lower() in EXCLUDED_SUFFIXES or path.name in {'.DS_Store', '.coverage'}:
+                if path.suffix.lower() in EXCLUDED_SUFFIXES or path.name == '.DS_Store':
                     continue
-                if path.name == '.env' or (path.name.startswith('.env.') and path.name != '.env.example'):
-                    continue
-                if path.name.endswith(('.zip.sha256', '.zip.tmp')):
-                    continue
-                if path.name.startswith(('failure-', 'preview-failure-')) and path.suffix == '.png':
+                if path.name.startswith(('failure-', 'i18n-failure-')) and path.suffix == '.png':
                     continue
                 archive.write(path, (Path(ROOT.name) / rel).as_posix())
                 count += 1

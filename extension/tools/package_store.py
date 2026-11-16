@@ -46,10 +46,8 @@ def build(root:Path,target:Path)->dict:
     target.with_suffix('.zip.sha256').write_text(digest+'  '+target.name+'\n',encoding='utf-8')
     return {'name':m['name'],'version':m['version'],'files':len(names),'bytes':target.stat().st_size,'sha256':digest,'zip':str(target)}
 def main()->int:
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path);a=p.parse_args()
-    try:
-        version=json.loads((ROOT/'manifest.json').read_text(encoding='utf-8'))['version']
-        target=a.output or ROOT.parent/f'Conversation-Timeline-Helper-v{version}-store-upload.zip'
-        print(json.dumps(build(ROOT,target),ensure_ascii=False,indent=2));return 0
+    version=json.loads((ROOT/'manifest.json').read_text(encoding='utf-8'))['version']
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,default=ROOT.parent/f'Conversation-Timeline-Helper-v{version}-store-upload.zip');a=p.parse_args()
+    try:print(json.dumps(build(ROOT,a.output),ensure_ascii=False,indent=2));return 0
     except (ValueError,OSError,KeyError,zipfile.BadZipFile) as e:print('Packaging failed: '+str(e),file=sys.stderr);return 1
 if __name__=='__main__':raise SystemExit(main())
