@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "对话时间轴助手",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "为 ChatGPT 和 Gemini 网页提供固定高度、无滑条的对话时间轴，随已加载消息更新；支持消息定位、悬停预览、搜索和本地收藏。非官方扩展。",
   "minimum_chrome_version": "120",
   "permissions": [

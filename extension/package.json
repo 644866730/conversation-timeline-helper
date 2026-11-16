@@ -1,6 +1,6 @@
 {
   "name": "conversation-timeline-helper",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "private": true,
   "description": "No-build conversation timeline browser extension. Node.js is optional for development tests only.",
   "license": "MIT",
