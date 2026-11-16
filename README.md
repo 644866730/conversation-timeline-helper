@@ -1,10 +1,14 @@
-# 对话时间轴助手 · v1.8.0
+# 对话时间轴助手 · v1.8.1
 
 **Conversation Timeline Helper** — 为 ChatGPT 与 Gemini 网页提供时间轴、消息搜索、收藏和章节导航的非官方 Manifest V3 扩展，适用于 Microsoft Edge 与 Chrome。
 
 固定高度、无滑条：顶部对应本页加载过的最旧消息，底部对应最新消息；消息增多时，旧节点逐渐压密。只观察当前页面实际加载内容，不扫描账号中的其他会话，不后台补全全部历史。
 
 [产品网站](https://644866730.github.io/conversation-timeline-helper/) · [隐私政策](https://644866730.github.io/conversation-timeline-helper/privacy.html) · [English privacy policy](https://644866730.github.io/conversation-timeline-helper/privacy-en.html) · [使用帮助](https://644866730.github.io/conversation-timeline-helper/support.html) · [问题反馈](https://github.com/644866730/conversation-timeline-helper/issues)
+
+## 本次修复 · v1.8.1
+
+目录入口与时间轴轨道整体下移 64px，为网页右上角的下载、全屏等原生操作留出空间；轨道底部仍保留 40px，入口不会遮住最旧节点。更新扩展并刷新对话网页后生效。
 
 ## 功能
 
@@ -35,7 +39,7 @@
 
 ## 安装源码版本
 
-当前版本 **1.8.0**，清单最低 Chromium 版本要求为 **120**。公开源码和网站不代表此版本已通过 Edge Add-ons 或 Chrome 网上应用店审核。
+当前版本 **1.8.1**，清单最低 Chromium 版本要求为 **120**。公开源码和网站不代表此版本已通过 Edge Add-ons 或 Chrome 网上应用店审核。
 
 1. 使用 **Code → Download ZIP** 并解压，或克隆本仓库。
 2. 在 Edge 打开 `edge://extensions/`，或在 Chrome 打开 `chrome://extensions/`，开启开发者模式。
@@ -97,7 +101,7 @@ python tests/gemini_browser_test.py
 python tests/i18n_browser_test.py
 ```
 
-v1.8.0 共 **300 项自动检查通过**：116 项 Node 检查、66 项基础浏览器场景、24 项已加载索引、25 项导航、27 项预览保护、24 项 Gemini 和 18 项国际化。浏览器结果来自真实 Chromium 渲染下的本地 DOM/Chrome API 模拟，不能视为原生 Edge 安装、跨浏览器重启持久化或所有真实账号灰度界面验收。当前验证说明见 [语言支持与验证记录](extension/docs/LANGUAGE_SUPPORT.md) 与 [兼容性边界](extension/docs/COMPATIBILITY.md)；历史版本报告保留在 `extension/docs/`，不代表当前版本的额外验收。
+v1.8.0 验证基线共 **300 项自动检查通过**：116 项 Node 检查、66 项基础浏览器场景、24 项已加载索引、25 项导航、27 项预览保护、24 项 Gemini 和 18 项国际化。浏览器结果来自真实 Chromium 渲染下的本地 DOM/Chrome API 模拟，不能视为原生 Edge 安装、跨浏览器重启持久化或所有真实账号灰度界面验收。以上是 v1.8.0 的验证基线，不代表 v1.8.1 已重新完成全部场景回归。基线说明见 [语言支持与验证记录](extension/docs/LANGUAGE_SUPPORT.md) 与 [兼容性边界](extension/docs/COMPATIBILITY.md)；历史版本报告保留在 `extension/docs/`，不代表当前版本的额外验收。
 
 ## 打包
 
@@ -105,10 +109,10 @@ v1.8.0 共 **300 项自动检查通过**：116 项 Node 检查、66 项基础浏
 
 ```sh
 # 商店上传包：manifest.json 在 ZIP 根目录，仅运行与许可文件
-python tools/package_store.py --output ../dist/Conversation-Timeline-Helper-v1.8.0-store-upload.zip
+python tools/package_store.py --output ../dist/Conversation-Timeline-Helper-v1.8.1-store-upload.zip
 
 # 完整工程包：含源码、测试、演示与开发文档
-python tools/package.py --output ../dist/Conversation-Timeline-Helper-v1.8.0-source.zip
+python tools/package.py --output ../dist/Conversation-Timeline-Helper-v1.8.1-source.zip
 ```
 
 不要把整个仓库 ZIP 或带顶层目录的源码包作为商店上传包。网站页面和内置隐私披露应保持一致；商店分发、审核与更新由对应平台处理。
