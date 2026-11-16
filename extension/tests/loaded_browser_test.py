@@ -53,7 +53,7 @@ def main():
         def endpoints(first,last):
             expect(nodes.first).to_have_attribute('data-key',re.compile('-'+str(first)+':'))
             expect(nodes.last).to_have_attribute('data-key',re.compile('-'+str(last)+':'))
-            ps=positions();assert abs(ps[0]-16)<.01 and abs(ps[-1]-784)<.01
+            ps=positions();assert abs(ps[0]-16)<.01 and abs(ps[-1]-720)<.01
         def run(name,fn):
             t=time.perf_counter()
             try:fn();rec={'name':name,'status':'passed'};print('PASS',name,flush=True)
@@ -139,8 +139,8 @@ def main():
             host.locator('[data-action=close]').click()
         run('Latest streamed body remains searchable after unmount without a cached-message modal',unmounted_stream)
         def resizing():
-            page.set_viewport_size({'width':1200,'height':650});scan();ps=positions();assert ps[0]==16 and ps[-1]==534
-            assert host.locator('.widget').bounding_box()['height']==550
+            page.set_viewport_size({'width':1200,'height':650});scan();ps=positions();assert ps[0]==16 and ps[-1]==470
+            assert host.locator('.widget').bounding_box()['height']==486
             page.set_viewport_size({'width':1400,'height':900});scan();endpoints(0,199)
         run('Window resize keeps first/last nodes pinned to the new fixed-height rail',resizing)
         def no_leaks():

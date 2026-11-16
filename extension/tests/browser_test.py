@@ -271,11 +271,13 @@ def main():
         run('350px viewport stays within screen bounds',narrow)
         def original_bar():
             reset();ui.locator('[data-action=close]').click();b=ui.locator('.widget').bounding_box()
-            assert b == {'x':1401,'y':60,'width':24,'height':900}, b
+            assert b == {'x':1401,'y':124,'width':24,'height':836}, b
+            launcher=ui.locator('.directory-launcher').bounding_box()
+            assert launcher['y']==72 and launcher['y']+launcher['height']+8==b['y'], launcher
             assert ui.locator('.widget').locator('button:not(.timeline-dot)').count()==0
             assert ui.locator('.rail-count,.toggle,.track:before').count()==0
             expect(ui.locator('.panel')).to_be_hidden()
-        run('Original UI: 24px track at top60/right15, no toolbar or count',original_bar)
+        run('Compact rail starts below the lowered launcher and leaves native top actions clear',original_bar)
         def palette():
             reset();node=ui.locator('.marker').nth(1)
             a=node.evaluate("e=>{const c=getComputedStyle(e,'::after');return [c.width,c.height,c.backgroundColor,c.borderRadius]}")
@@ -308,7 +310,7 @@ def main():
         run('Soft Utility: plain-text three-line preview with a 16px corner radius',tooltip_contract)
         def fixed_density():
             reset(n=400);values=ui.locator('.marker').evaluate_all("a=>a.map(e=>parseFloat(e.style.top))")
-            assert len(values)==400 and abs(values[0]-16)<.01 and abs(values[-1]-884)<.01
+            assert len(values)==400 and abs(values[0]-16)<.01 and abs(values[-1]-820)<.01
             assert 0<values[1]-values[0]<values[-1]-values[-2]<24
             assert ui.locator('.timeline-left-slider').count()==0
         run('Fixed rail pins endpoints and compresses old top nodes more densely',fixed_density)
