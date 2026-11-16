@@ -1,27 +1,11 @@
 <!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>对话时间轴助手 1.4.2 · 安装与迁移</title>
-  <style>body{max-width:820px;margin:40px auto;padding:0 24px;background:#f7faf8;color:#20382e;font:15px/1.9 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}h1{line-height:1.4}a{color:#087f73}code{background:#e8efeb;padding:2px 5px;border-radius:4px}</style>
-</head>
-<body>
-  <h1>安装与迁移 · 1.4.2</h1>
-  <p>对话时间轴助手是用于 ChatGPT 网页版的非官方扩展。本源码目录已可直接加载，无需编译、API Key、服务器、Node.js 或 Python。</p>
-  <h2>本地安装</h2>
-  <ol>
-    <li>将完整源码保存到固定目录，确认该目录直接包含 <code>manifest.json</code>。</li>
-    <li>打开 <code>chrome://extensions/</code>，开启「开发者模式」，点击「加载已解压的扩展程序」，选择该源码目录。</li>
-    <li>刷新所有已打开的 ChatGPT 标签页，在含有多条消息的对话中检查时间轴。</li>
-  </ol>
-  <p>开发者模式安装需要保留源码目录。浏览器或组织策略可能限制本地安装。</p>
-  <h2>已有版本与本次修复</h2>
-  <p>升级前先导出收藏并备份原安装目录。不同扩展 ID 的数据不会自动迁移，请按 <a href="INSTALL.txt">完整安装与迁移说明</a> 操作，并且只启用一个版本。更新后须重新加载扩展并刷新网页。</p>
-  <p>1.4.2 修复图片、附件预览打开时的点击冲突及关闭后的阅读位置保持。请在无私人内容的测试对话中验收关闭按钮、Esc、背景关闭和旧节点导航。</p>
-  <h2>开发与打包</h2>
-  <p>运行测试、生成样式及打包命令见 <a href="README.md">README</a>。完整源码包与商店上传包用途不同；商店上传包的 <code>manifest.json</code> 应在 ZIP 根目录。</p>
-  <p>本地模拟测试不代表已登录 ChatGPT 账号实测，也不代表商店审核通过。详见 <a href="docs/TEST_REPORT.md">测试报告</a>。</p>
-  <p><a href="PRIVACY.md">隐私说明</a> · <a href="LICENSE">许可证</a> · <a href="THIRD_PARTY_NOTICES.md">第三方声明</a></p>
-</body>
-</html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>对话时间轴助手 · 安装与更新</title><link rel="stylesheet" href="src/theme.css"><link rel="stylesheet" href="privacy.css"></head>
+<body><header><img src="icons/icon48.png" alt=""><div><strong>对话时间轴助手 · 1.8.0</strong><br><span>ChatGPT 与 Gemini · 让长对话，更好找。</span></div></header>
+<main><h1>安装与更新</h1><p class="lead">无需编译，解压后即可加载。</p>
+<h2>首次安装</h2><ol><li>把安装 ZIP 解压到固定目录。</li><li>在 Edge 打开 <code>edge://extensions/</code>，或在 Chrome 打开 <code>chrome://extensions/</code>，启用「开发者模式」。</li><li>点击「加载已解压的扩展程序」，选择直接包含 <code>manifest.json</code> 的目录。</li><li>刷新 ChatGPT 或 Gemini，点击页面边缘的「目录」开始查找。</li></ol>
+<h2>更新已有版本</h2><p>先在旧版「高级与数据 → 本地收藏与备份」导出收藏。使用原来的扩展目录时，在扩展管理页点击重新加载，再刷新 ChatGPT 和 Gemini 已打开的标签页。1.7.0 新增 <code>gemini.google.com</code> 站点访问，浏览器可能要求确认。若新目录被浏览器识别成另一个扩展，请停用旧版并导入备份；收藏格式继续兼容 v1，既有 ChatGPT 收藏键保持兼容。</p>
+<h2>在 Gemini 使用</h2><p>打开 <code>https://gemini.google.com/app</code> 并选择对话。会话地址识别支持普通 <code>/app/&lt;会话ID&gt;</code>、Gem <code>/gem/&lt;GemID&gt;/&lt;会话ID&gt;</code>、<code>/share/&lt;分享ID&gt;</code> 和相应账号前缀。Gemini 与 ChatGPT 收藏隔离；没有稳定会话 ID 的页面只保留临时收藏。Gemini 读取当前页面 DOM，并在主动选择旧节点后尝试通过原页面滚动恢复，不运行 React MAIN 定位助手。</p>
+<h2>语言切换</h2><p>在「常用设置 → 界面语言」选择八种语言之一，或跟随浏览器。切换后自动保存，并实时更新已打开的 ChatGPT 与 Gemini 时间轴。聊天正文和章节原文保持不变。</p><h2>这一版可以做什么</h2><ul><li>用固定高度的时间轴定位提问和回复，密集圆点可展开附近消息逐组选择。</li><li>搜索已加载消息，在结果中看到命中词及上下文。</li><li>回复下「查看章节」可直接定位到答案中的标题。</li><li>通过方向键选择结果，Enter 定位，Esc 收起。</li><li>查阅旧消息后，点击「返回阅读处」恢复原来的位置。</li><li>在本地收藏消息，导入和导出收藏标记。</li><li>目录底部「导出」将当前显示、搜索、收藏或附近列表保存为 Markdown。</li></ul>
+<p class="check">索引仅覆盖本页实际加载过的内容。扩展不会在空闲时补全全部历史，返回位置只保存在当前标签页内存。</p>
+<h2>遇到问题</h2><p>安装或更新后先刷新当前 ChatGPT 或 Gemini 页面。如果目录仍未识别到内容，在设置的「高级与数据 → 适配与诊断」重新识别并查看诊断。已查看已登录 Gemini 的页面结构，但这不代表完整真实功能回归已完成。网站灰度界面可能不同，请以当前版本的实际验收说明为准。</p>
+<p><a href="privacy.html">阅读隐私政策</a></p></main><footer>非官方扩展 · 仅本地处理 · 固定时间轴，无滑条</footer></body></html>
