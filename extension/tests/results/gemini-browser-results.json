@@ -1,0 +1,129 @@
+{
+  "mode": "Gemini LOCAL DOM fixtures and MOCK Chrome APIs; not a live account",
+  "browser": "153.0.8010.12",
+  "executedAt": "2026-11-16T12:54:31Z",
+  "passed": 24,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Gemini custom elements produce separate user and assistant targets",
+      "status": "passed",
+      "seconds": 0.321
+    },
+    {
+      "name": "Sidebar, unsent draft and message toolbars stay outside the index",
+      "status": "passed",
+      "seconds": 0.257
+    },
+    {
+      "name": "Screen-reader duplicate prompt labels are excluded from text, outline and export",
+      "status": "passed",
+      "seconds": 0.352
+    },
+    {
+      "name": "Hidden Gemini branches are not indexed",
+      "status": "passed",
+      "seconds": 0.263
+    },
+    {
+      "name": "Idle observation makes no scroll writes, requests or MAIN seek messages",
+      "status": "passed",
+      "seconds": 1.322
+    },
+    {
+      "name": "Prompt-only preference works on Gemini",
+      "status": "passed",
+      "seconds": 0.254
+    },
+    {
+      "name": "Gemini body light-theme and dark-theme are followed",
+      "status": "passed",
+      "seconds": 0.235
+    },
+    {
+      "name": "Mounted message navigation uses the inner Gemini scroller without React helper",
+      "status": "passed",
+      "seconds": 0.623
+    },
+    {
+      "name": "Observed unmounted Gemini messages recover through active scrolling with stable IDs and no MAIN seek",
+      "status": "passed",
+      "seconds": 1.173
+    },
+    {
+      "name": "Return restores the Gemini reading offset",
+      "status": "passed",
+      "seconds": 1.864
+    },
+    {
+      "name": "Streaming reply tails become searchable without duplicate nodes",
+      "status": "passed",
+      "seconds": 0.553
+    },
+    {
+      "name": "Angular parent-turn identity replacement is not mistaken for streaming text",
+      "status": "passed",
+      "seconds": 0.192
+    },
+    {
+      "name": "Stable Gemini bookmarks restore after controller restart without storing text",
+      "status": "passed",
+      "seconds": 0.282
+    },
+    {
+      "name": "Gemini bookmarks remain isolated between conversations",
+      "status": "passed",
+      "seconds": 0.32
+    },
+    {
+      "name": "Gemini new-chat route uses memory-only bookmarks",
+      "status": "passed",
+      "seconds": 0.304
+    },
+    {
+      "name": "Gemini app route promotion retains the same first prompt DOM and enables persistent bookmarks",
+      "status": "passed",
+      "seconds": 0.3
+    },
+    {
+      "name": "Gemini account-prefixed Gem route promotion retains the same first prompt DOM and stable scope",
+      "status": "passed",
+      "seconds": 0.268
+    },
+    {
+      "name": "Long Gemini replies support exact chapter navigation",
+      "status": "passed",
+      "seconds": 1.204
+    },
+    {
+      "name": "Filtered Gemini Markdown export uses platform filename and preserves code",
+      "status": "passed",
+      "seconds": 0.284
+    },
+    {
+      "name": "Native Gemini dialog close preserves the reading position after focus reset",
+      "status": "passed",
+      "seconds": 1.532
+    },
+    {
+      "name": "Ordinary Gemini CDK menus do not trigger media preview protection",
+      "status": "passed",
+      "seconds": 0.385
+    },
+    {
+      "name": "Gemini SPA route replacement clears the previous conversation index",
+      "status": "passed",
+      "seconds": 0.21
+    },
+    {
+      "name": "Gemini prompt editing is not hijacked by message-navigation keys",
+      "status": "passed",
+      "seconds": 0.388
+    },
+    {
+      "name": "Empty Gemini conversation has no fabricated messages or decorative rail",
+      "status": "passed",
+      "seconds": 0.217
+    }
+  ]
+}

@@ -1,560 +1,124 @@
-
-> conversation-timeline-helper@1.4.2 test
-> node --test tests/*.test.cjs
-
-TAP version 13
-# Subtest: settings default is copied, not mutable singleton
-ok 1 - settings default is copied, not mutable singleton
-  ---
-  duration_ms: 1.555129
-  type: 'test'
-  ...
-# Subtest: settings reject truthy strings and unknown fields
-ok 2 - settings reject truthy strings and unknown fields
-  ---
-  duration_ms: 0.301241
-  type: 'test'
-  ...
-# Subtest: settings safely handle null / array input
-ok 3 - settings safely handle null / array input
-  ---
-  duration_ms: 0.64824
-  type: 'test'
-  ...
-# Subtest: settings enum validation
-ok 4 - settings enum validation
-  ---
-  duration_ms: 0.193871
-  type: 'test'
-  ...
-# Subtest: vertical range clamps and rounds
-ok 5 - vertical range clamps and rounds
-  ---
-  duration_ms: 0.149694
-  type: 'test'
-  ...
-# Subtest: selector length limit and trimming
-ok 6 - selector length limit and trimming
-  ---
-  duration_ms: 0.115062
-  type: 'test'
-  ...
-# Subtest: storage settings round trip
-ok 7 - storage settings round trip
-  ---
-  duration_ms: 0.337435
-  type: 'test'
-  ...
-# Subtest: unknown storage keys do not become settings
-ok 8 - unknown storage keys do not become settings
-  ---
-  duration_ms: 0.152729
-  type: 'test'
-  ...
-# Subtest: text normalizes Unicode whitespace
-ok 9 - text normalizes Unicode whitespace
-  ---
-  duration_ms: 0.444816
-  type: 'test'
-  ...
-# Subtest: excerpt does not split emoji surrogate pairs
-ok 10 - excerpt does not split emoji surrogate pairs
-  ---
-  duration_ms: 0.422713
-  type: 'test'
-  ...
-# Subtest: hash deterministic, fixed width and differing inputs
-ok 11 - hash deterministic, fixed width and differing inputs
-  ---
-  duration_ms: 0.303435
-  type: 'test'
-  ...
-# Subtest: hash sample uniqueness (not a cryptographic guarantee)
-ok 12 - hash sample uniqueness (not a cryptographic guarantee)
-  ---
-  duration_ms: 9.259336
-  type: 'test'
-  ...
-# Subtest: regular conversation has stable scope
-ok 13 - regular conversation has stable scope
-  ---
-  duration_ms: 0.431777
-  type: 'test'
-  ...
-# Subtest: project and custom GPT routes resolve conversation IDs
-ok 14 - project and custom GPT routes resolve conversation IDs
-  ---
-  duration_ms: 0.158858
-  type: 'test'
-  ...
-# Subtest: different threads and shared links are isolated
-ok 15 - different threads and shared links are isolated
-  ---
-  duration_ms: 0.182933
-  type: 'test'
-  ...
-# Subtest: missing conversation ID and invalid URLs are ephemeral
-ok 16 - missing conversation ID and invalid URLs are ephemeral
-  ---
-  duration_ms: 0.26072
-  type: 'test'
-  ...
-# Subtest: route ignores non-semantic queries and hash
-ok 17 - route ignores non-semantic queries and hash
-  ---
-  duration_ms: 0.239048
-  type: 'test'
-  ...
-# Subtest: bookmark keys contain no raw identifiers
-ok 18 - bookmark keys contain no raw identifiers
-  ---
-  duration_ms: 0.150395
-  type: 'test'
-  ...
-# Subtest: query is case-insensitive AND search, including Chinese
-ok 19 - query is case-insensitive AND search, including Chinese
-  ---
-  duration_ms: 0.176865
-  type: 'test'
-  ...
-# Subtest: binary active index at all boundaries
-ok 20 - binary active index at all boundaries
-  ---
-  duration_ms: 0.09339
-  type: 'test'
-  ...
-# Subtest: valid backup retains only allowed fields
-ok 21 - valid backup retains only allowed fields
-  ---
-  duration_ms: 0.235443
-  type: 'test'
-  ...
-# Subtest: backup rejects arbitrary keys, invalid dates and versions
-ok 22 - backup rejects arbitrary keys, invalid dates and versions
-  ---
-  duration_ms: 0.271006
-  type: 'test'
-  ...
-# Subtest: backup caps entry count
-ok 23 - backup caps entry count
-  ---
-  duration_ms: 0.178887
-  type: 'test'
-  ...
-# Subtest: empty timeline occupies one viewport
-ok 24 - empty timeline occupies one viewport
-  ---
-  duration_ms: 1.232696
-  type: 'test'
-  ...
-# Subtest: single message is both endpoints and starts at upper padding
-ok 25 - single message is both endpoints and starts at upper padding
-  ---
-  duration_ms: 0.272258
-  type: 'test'
-  ...
-# Subtest: two messages anchor to exact top and bottom
-ok 26 - two messages anchor to exact top and bottom
-  ---
-  duration_ms: 0.111166
-  type: 'test'
-  ...
-# Subtest: short conversations use chronological rank, not paragraph height
-ok 27 - short conversations use chronological rank, not paragraph height
-  ---
-  duration_ms: 0.152028
-  type: 'test'
-  ...
-# Subtest: 20 messages: fixed height, all unique nodes, exact endpoints
-ok 28 - 20 messages: fixed height, all unique nodes, exact endpoints
-  ---
-  duration_ms: 0.281391
-  type: 'test'
-  ...
-# Subtest: 100 messages: fixed height, all unique nodes, exact endpoints
-ok 29 - 100 messages: fixed height, all unique nodes, exact endpoints
-  ---
-  duration_ms: 0.191316
-  type: 'test'
-  ...
-# Subtest: 400 messages: fixed height, all unique nodes, exact endpoints
-ok 30 - 400 messages: fixed height, all unique nodes, exact endpoints
-  ---
-  duration_ms: 0.29414
-  type: 'test'
-  ...
-# Subtest: 1000 messages: fixed height, all unique nodes, exact endpoints
-ok 31 - 1000 messages: fixed height, all unique nodes, exact endpoints
-  ---
-  duration_ms: 0.954139
-  type: 'test'
-  ...
-# Subtest: 10000 messages: fixed height, all unique nodes, exact endpoints
-ok 32 - 10000 messages: fixed height, all unique nodes, exact endpoints
-  ---
-  duration_ms: 4.215192
-  type: 'test'
-  ...
-# Subtest: older top messages are closer together than newer bottom messages
-ok 33 - older top messages are closer together than newer bottom messages
-  ---
-  duration_ms: 0.529904
-  type: 'test'
-  ...
-# Subtest: more messages progressively compress the old-message region
-ok 34 - more messages progressively compress the old-message region
-  ---
-  duration_ms: 0.282503
-  type: 'test'
-  ...
-# Subtest: scroll/virtual layout values cannot move the fixed rank positions
-ok 35 - scroll/virtual layout values cannot move the fixed rank positions
-  ---
-  duration_ms: 0.365007
-  type: 'test'
-  ...
-# Subtest: resize recomputes endpoints without overflowing
-ok 36 - resize recomputes endpoints without overflowing
-  ---
-  duration_ms: 0.323825
-  type: 'test'
-  ...
-# Subtest: dense dots remain circular with adaptive diameters
-ok 37 - dense dots remain circular with adaptive diameters
-  ---
-  duration_ms: 0.296353
-  type: 'test'
-  ...
-# Subtest: nearest pointer picking ignores overlapping hit boxes
-ok 38 - nearest pointer picking ignores overlapping hit boxes
-  ---
-  duration_ms: 0.184396
-  type: 'test'
-  ...
-# Subtest: nearest pointer picking handles empty/invalid inputs
-ok 39 - nearest pointer picking handles empty/invalid inputs
-  ---
-  duration_ms: 0.074221
-  type: 'test'
-  ...
-# Subtest: first scan contains only actually observed messages
-ok 40 - first scan contains only actually observed messages
-  ---
-  duration_ms: 2.5242
-  type: 'test'
-  ...
-# Subtest: overlapping prepend puts oldest first and latest last
-ok 41 - overlapping prepend puts oldest first and latest last
-  ---
-  duration_ms: 0.426809
-  type: 'test'
-  ...
-# Subtest: append preserves observed history and adds newest at end
-ok 42 - append preserves observed history and adds newest at end
-  ---
-  duration_ms: 0.170435
-  type: 'test'
-  ...
-# Subtest: prepend and append in same scan retain full chronological order
-ok 43 - prepend and append in same scan retain full chronological order
-  ---
-  duration_ms: 0.29386
-  type: 'test'
-  ...
-# Subtest: empty virtualized DOM does not erase loaded nodes
-ok 44 - empty virtualized DOM does not erase loaded nodes
-  ---
-  duration_ms: 0.219028
-  type: 'test'
-  ...
-# Subtest: only currently observed entries retain live DOM references
-ok 45 - only currently observed entries retain live DOM references
-  ---
-  duration_ms: 0.142924
-  type: 'test'
-  ...
-# Subtest: returned DOM objects are not strongly retained as history
-ok 46 - returned DOM objects are not strongly retained as history
-  ---
-  duration_ms: 0.242774
-  type: 'test'
-  ...
-# Subtest: remount deduplicates remembered stable identities
-ok 47 - remount deduplicates remembered stable identities
-  ---
-  duration_ms: 0.222292
-  type: 'test'
-  ...
-# Subtest: disjoint older window uses positional hints
-ok 48 - disjoint older window uses positional hints
-  ---
-  duration_ms: 1.196702
-  type: 'test'
-  ...
-# Subtest: unloaded gaps are never fabricated
-ok 49 - unloaded gaps are never fabricated
-  ---
-  duration_ms: 0.366789
-  type: 'test'
-  ...
-# Subtest: no-ID/no-overlap uses explicit older scroll direction
-ok 50 - no-ID/no-overlap uses explicit older scroll direction
-  ---
-  duration_ms: 0.26711
-  type: 'test'
-  ...
-# Subtest: local positional renumbering cannot override shared anchors
-ok 51 - local positional renumbering cannot override shared anchors
-  ---
-  duration_ms: 0.428402
-  type: 'test'
-  ...
-# Subtest: streaming stable native ID updates one item
-ok 52 - streaming stable native ID updates one item
-  ---
-  duration_ms: 0.183905
-  type: 'test'
-  ...
-# Subtest: text-only streaming on same node keeps a single identity
-ok 53 - text-only streaming on same node keeps a single identity
-  ---
-  duration_ms: 0.176515
-  type: 'test'
-  ...
-# Subtest: recycled node with new native ID is not a streaming continuation
-ok 54 - recycled node with new native ID is not a streaming continuation
-  ---
-  duration_ms: 0.097957
-  type: 'test'
-  ...
-# Subtest: identical content with different native IDs remains distinct
-ok 55 - identical content with different native IDs remains distinct
-  ---
-  duration_ms: 0.11983
-  type: 'test'
-  ...
-# Subtest: duplicate stable input IDs are deduplicated
-ok 56 - duplicate stable input IDs are deduplicated
-  ---
-  duration_ms: 0.068282
-  type: 'test'
-  ...
-# Subtest: ordinals and role ordinals follow recomputed chronological order
-ok 57 - ordinals and role ordinals follow recomputed chronological order
-  ---
-  duration_ms: 0.177436
-  type: 'test'
-  ...
-# Subtest: route reset removes all previously seen messages
-ok 58 - route reset removes all previously seen messages
-  ---
-  duration_ms: 0.106159
-  type: 'test'
-  ...
-# Subtest: legacy full-history preferences cannot re-enable removed behavior
-ok 59 - legacy full-history preferences cannot re-enable removed behavior
-  ---
-  duration_ms: 0.172348
-  type: 'test'
-  ...
-# Subtest: memory budget retains all nodes but truncates overflow bodies explicitly
-ok 60 - memory budget retains all nodes but truncates overflow bodies explicitly
-  ---
-  duration_ms: 3.388564
-  type: 'test'
-  ...
-# Subtest: MV3: storage only; no cookies, tabs, debugger, webRequest, broad hosts or remote resources
-ok 61 - MV3: storage only; no cookies, tabs, debugger, webRequest, broad hosts or remote resources
-  ---
-  duration_ms: 1.424393
-  type: 'test'
-  ...
-# Subtest: site-limited idle MAIN navigator + ISOLATED observer; no history bridge
-ok 62 - site-limited idle MAIN navigator + ISOLATED observer; no history bridge
-  ---
-  duration_ms: 0.234981
-  type: 'test'
-  ...
-# Subtest: all declared extension assets exist
-ok 63 - all declared extension assets exist
-  ---
-  duration_ms: 0.482012
-  type: 'test'
-  ...
-# Subtest: versions agree
-ok 64 - versions agree
-  ---
-  duration_ms: 1.623731
-  type: 'test'
-  ...
-# Subtest: embedded CSS equals maintained source
-ok 65 - embedded CSS equals maintained source
-  ---
-  duration_ms: 1.298404
-  type: 'test'
-  ...
-# Subtest: no eval, executable HTML sinks, external sockets or third-party runtime dependencies
-ok 66 - no eval, executable HTML sinks, external sockets or third-party runtime dependencies
-  ---
-  duration_ms: 1.328911
-  type: 'test'
-  ...
-# Subtest: no network or history access exists in any runtime script
-ok 67 - no network or history access exists in any runtime script
-  ---
-  duration_ms: 1.815488
-  type: 'test'
-  ...
-# Subtest: popups have only bundled script sources and no inline handlers
-ok 68 - popups have only bundled script sources and no inline handlers
-  ---
-  duration_ms: 0.410555
-  type: 'test'
-  ...
-# Subtest: test/demo shims are not shipped as injected code
-ok 69 - test/demo shims are not shipped as injected code
-  ---
-  duration_ms: 0.358927
-  type: 'test'
-  ...
-# Subtest: popup intrinsic width explicit on both html/body; no max-width:100vw shrink loop
-ok 70 - popup intrinsic width explicit on both html/body; no max-width:100vw shrink loop
-  ---
-  duration_ms: 0.360029
-  type: 'test'
-  ...
-# Subtest: only observed explicit identities, no fabricated ordinal keys
-ok 71 - only observed explicit identities, no fabricated ordinal keys
-  ---
-  duration_ms: 3.4528
-  type: 'test'
-  ...
-# Subtest: key matching is exact, never substring
-ok 72 - key matching is exact, never substring
-  ---
-  duration_ms: 0.916843
-  type: 'test'
-  ...
-# Subtest: navigation direction goes backward for old target
-ok 73 - navigation direction goes backward for old target
-  ---
-  duration_ms: 0.263865
-  type: 'test'
-  ...
-# Subtest: navigation direction goes forward for later target
-ok 74 - navigation direction goes forward for later target
-  ---
-  duration_ms: 1.383853
-  type: 'test'
-  ...
-# Subtest: empty native window waits, not false success
-ok 75 - empty native window waits, not false success
-  ---
-  duration_ms: 0.240991
-  type: 'test'
-  ...
-# Subtest: inner mounted-window gap chooses chronological neighbour
-ok 76 - inner mounted-window gap chooses chronological neighbour
-  ---
-  duration_ms: 0.143284
-  type: 'test'
-  ...
-# Subtest: normal scroll bounds are respected
-ok 77 - normal scroll bounds are respected
-  ---
-  duration_ms: 0.296554
-  type: 'test'
-  ...
-# Subtest: reverse negative scroll bounds are respected
-ok 78 - reverse negative scroll bounds are respected
-  ---
-  duration_ms: 0.154662
-  type: 'test'
-  ...
-# Subtest: ordinary step covers less than one viewport
-ok 79 - ordinary step covers less than one viewport
-  ---
-  duration_ms: 0.424996
-  type: 'test'
-  ...
-# Subtest: overshoot shrinks seek steps
-ok 80 - overshoot shrinks seek steps
-  ---
-  duration_ms: 0.427981
-  type: 'test'
-  ...
-# Subtest: layout shift requires two coherent witnesses
-ok 81 - layout shift requires two coherent witnesses
-  ---
-  duration_ms: 0.262964
-  type: 'test'
-  ...
-# Subtest: all seek loops have finite time and step limits
-ok 82 - all seek loops have finite time and step limits
-  ---
-  duration_ms: 0.117826
-  type: 'test'
-  ...
-# Subtest: cached reader creation and fallback are gone
-ok 83 - cached reader creation and fallback are gone
-  ---
-  duration_ms: 0.673439
-  type: 'test'
-  ...
-# Subtest: MAIN helper is dormant, no timers, periodic discovery or inline injection
-ok 84 - MAIN helper is dormant, no timers, periodic discovery or inline injection
-  ---
-  duration_ms: 0.241501
-  type: 'test'
-  ...
-# Subtest: helper acknowledgement is not treated as verified navigation
-ok 85 - helper acknowledgement is not treated as verified navigation
-  ---
-  duration_ms: 0.303645
-  type: 'test'
-  ...
-# Subtest: seeks abort on manual gesture and route lifecycle
-ok 86 - seeks abort on manual gesture and route lifecycle
-  ---
-  duration_ms: 0.334361
-  type: 'test'
-  ...
-# Subtest: preview guard is a bundled isolated script loaded before the controller
-ok 87 - preview guard is a bundled isolated script loaded before the controller
-  ---
-  duration_ms: 1.092996
-  type: 'test'
-  ...
-# Subtest: preview guard cannot fetch history, seek a virtualizer, click a pagination control or override focus
-ok 88 - preview guard cannot fetch history, seek a virtualizer, click a pagination control or override focus
-  ---
-  duration_ms: 0.259339
-  type: 'test'
-  ...
-# Subtest: preview correction is bounded and has no idle interval loop
-ok 89 - preview correction is bounded and has no idle interval loop
-  ---
-  duration_ms: 0.275042
-  type: 'test'
-  ...
-# Subtest: native helper refuses queued seek while preview guard is holding input
-ok 90 - native helper refuses queued seek while preview guard is holding input
-  ---
-  duration_ms: 0.960849
-  type: 'test'
-  ...
-# Subtest: hidden preview guard cannot intercept the native close button; shortcuts honor pause
-ok 91 - hidden preview guard cannot intercept the native close button; shortcuts honor pause
-  ---
-  duration_ms: 0.264546
-  type: 'test'
-  ...
-1..91
-# tests 91
-# suites 0
-# pass 91
-# fail 0
-# cancelled 0
-# skipped 0
-# todo 0
-# duration_ms 154.153972
+✔ settings default is copied, not mutable singleton (1.4011ms)
+✔ settings reject truthy strings and unknown fields (0.1242ms)
+✔ settings safely handle null / array input (1.1938ms)
+✔ settings enum validation (0.2459ms)
+✔ vertical range clamps and rounds (0.2595ms)
+✔ selector length limit and trimming (0.2201ms)
+✔ storage settings round trip (0.5016ms)
+✔ language preferences persist and invalid values return to browser auto (0.8244ms)
+✔ unknown storage keys do not become settings (0.3944ms)
+✔ text normalizes Unicode whitespace (0.5173ms)
+✔ excerpt does not split emoji surrogate pairs (0.2998ms)
+✔ hash deterministic, fixed width and differing inputs (0.3921ms)
+✔ hash sample uniqueness (not a cryptographic guarantee) (8.8221ms)
+✔ regular conversation has stable scope (0.3874ms)
+✔ project and custom GPT routes resolve conversation IDs (0.1586ms)
+✔ different threads and shared links are isolated (0.1208ms)
+✔ existing ChatGPT bookmark fingerprints remain byte-compatible (0.1603ms)
+✔ platform recognition uses supported HTTPS hostnames, not lookalike strings (0.1079ms)
+✔ platform names accept platform identifiers or supported URLs (0.0765ms)
+✔ Gemini app scopes remain stable across account routes and tracking queries (1.1269ms)
+✔ Gem conversations use their final conversation ID and share app scopes (0.2199ms)
+✔ Gemini shares and ChatGPT conversations cannot collide on the same identifier (0.0998ms)
+✔ Gemini new chats, incomplete routes and unsupported sites remain memory-only (0.3427ms)
+✔ missing conversation ID and invalid URLs are ephemeral (0.1295ms)
+✔ route ignores non-semantic queries and hash (0.1943ms)
+✔ bookmark keys contain no raw identifiers (0.1274ms)
+✔ query is case-insensitive AND search, including Chinese (0.1382ms)
+✔ binary active index at all boundaries (0.0729ms)
+✔ valid backup retains only allowed fields (0.2137ms)
+✔ backup rejects arbitrary keys, invalid dates and versions (0.3018ms)
+✔ backup caps entry count (0.1846ms)
+✔ eight native language names are immutable and contain no auto pseudo-locale (1.6841ms)
+✔ browser language resolution handles Chinese regions and scripts (0.7296ms)
+✔ browser language resolution supports common regions and defaults safely (0.2286ms)
+✔ no browser navigator is required to load or translate the engine (2.8074ms)
+✔ every bundled content dictionary cell is complete and preserves placeholders (8.7462ms)
+✔ every bundled popup dictionary cell is complete and registers under its correct locale (6.3441ms)
+✔ interpolation is literal text and does not recurse into inserted values (0.2816ms)
+✔ missing keys use Chinese catalog before the original literal key (0.1448ms)
+✔ catalog registration merges only supported own string data properties (0.4249ms)
+✔ catalog registration and interpolation reject prototype pollution and getters (0.6386ms)
+✔ empty timeline occupies one viewport (2.1808ms)
+✔ single message is both endpoints and starts at upper padding (0.4367ms)
+✔ two messages anchor to exact top and bottom (0.3632ms)
+✔ short conversations use chronological rank, not paragraph height (0.1093ms)
+✔ 20 messages: fixed height, all unique nodes, exact endpoints (0.2381ms)
+✔ 100 messages: fixed height, all unique nodes, exact endpoints (0.1355ms)
+✔ 400 messages: fixed height, all unique nodes, exact endpoints (0.3773ms)
+✔ 1000 messages: fixed height, all unique nodes, exact endpoints (0.8174ms)
+✔ 10000 messages: fixed height, all unique nodes, exact endpoints (3.6384ms)
+✔ older top messages are closer together than newer bottom messages (0.8841ms)
+✔ more messages progressively compress the old-message region (0.4647ms)
+✔ scroll/virtual layout values cannot move the fixed rank positions (0.2617ms)
+✔ resize recomputes endpoints without overflowing (1.3598ms)
+✔ dense dots remain circular with adaptive diameters (0.5412ms)
+✔ nearest pointer picking ignores overlapping hit boxes (0.3112ms)
+✔ nearest pointer picking handles empty/invalid inputs (0.1085ms)
+✔ first scan contains only actually observed messages (2.7371ms)
+✔ overlapping prepend puts oldest first and latest last (0.401ms)
+✔ append preserves observed history and adds newest at end (0.1506ms)
+✔ prepend and append in same scan retain full chronological order (0.1289ms)
+✔ empty virtualized DOM does not erase loaded nodes (0.2722ms)
+✔ only currently observed entries retain live DOM references (0.399ms)
+✔ returned DOM objects are not strongly retained as history (0.0963ms)
+✔ remount deduplicates remembered stable identities (0.2122ms)
+✔ disjoint older window uses positional hints (1.3727ms)
+✔ unloaded gaps are never fabricated (0.2465ms)
+✔ no-ID/no-overlap uses explicit older scroll direction (0.1663ms)
+✔ local positional renumbering cannot override shared anchors (0.119ms)
+✔ streaming stable native ID updates one item (0.0613ms)
+✔ text-only streaming on same node keeps a single identity (0.0988ms)
+✔ recycled node with new native ID is not a streaming continuation (0.065ms)
+✔ identical content with different native IDs remains distinct (0.0929ms)
+✔ duplicate stable input IDs are deduplicated (0.0461ms)
+✔ ordinals and role ordinals follow recomputed chronological order (0.1336ms)
+✔ route reset removes all previously seen messages (0.242ms)
+✔ legacy full-history preferences cannot re-enable removed behavior (0.3269ms)
+✔ memory budget retains all nodes but truncates overflow bodies explicitly (1.2557ms)
+✔ MV3: storage only; no cookies, tabs, debugger, webRequest, broad hosts or remote resources (1.9382ms)
+✔ site-limited idle scripts: Gemini is isolated-only and React MAIN helper remains ChatGPT-only (0.4388ms)
+✔ all declared extension assets exist (2.5413ms)
+✔ offline translations load before controllers on both platforms and settings pages (7.7894ms)
+✔ versions agree (1.1491ms)
+✔ embedded CSS equals maintained source (1.4836ms)
+✔ no eval, executable HTML sinks, external sockets or third-party runtime dependencies (4.423ms)
+✔ no network or history access exists in any runtime script (3.635ms)
+✔ popups have only bundled script sources and no inline handlers (1.3529ms)
+✔ test/demo shims are not shipped as injected code (0.3827ms)
+✔ popup intrinsic width explicit on both html/body; no max-width:100vw shrink loop (0.4351ms)
+✔ only observed explicit identities, no fabricated ordinal keys (1.9422ms)
+✔ key matching is exact, never substring (0.1603ms)
+✔ navigation direction goes backward for old target (0.1261ms)
+✔ navigation direction goes forward for later target (0.1568ms)
+✔ empty native window waits, not false success (0.101ms)
+✔ inner mounted-window gap chooses chronological neighbour (0.0959ms)
+✔ normal scroll bounds are respected (0.1757ms)
+✔ reverse negative scroll bounds are respected (0.0603ms)
+✔ ordinary step covers less than one viewport (0.169ms)
+✔ overshoot shrinks seek steps (0.2216ms)
+✔ layout shift requires two coherent witnesses (0.2861ms)
+✔ all seek loops have finite time and step limits (0.1025ms)
+✔ cached reader creation and fallback are gone (0.9234ms)
+✔ MAIN helper is dormant, no timers, periodic discovery or inline injection (0.4206ms)
+✔ helper acknowledgement is not treated as verified navigation (0.4688ms)
+✔ seeks abort on manual gesture and route lifecycle (1.5046ms)
+✔ preview guard is a bundled isolated script loaded before the controller (0.5366ms)
+✔ preview guard cannot fetch history, seek a virtualizer, click a pagination control or override focus (0.897ms)
+✔ preview correction is bounded and has no idle interval loop (0.1802ms)
+✔ native helper refuses queued seek while preview guard is holding input (0.2708ms)
+✔ hidden preview guard cannot intercept the native close button; shortcuts honor pause (0.3119ms)
+✔ dense regions are distinguished from safely separated nodes (1.1602ms)
+✔ nearby choices include the clicked node and respect both endpoints (0.5275ms)
+✔ long reply results include and highlight a keyword after the opening excerpt (1.4629ms)
+✔ multiple literal keywords are highlighted case-insensitively (0.3829ms)
+✔ query punctuation is literal and markup remains inert text (0.2288ms)
+✔ snippets preserve emoji and fall back when only metadata matched (0.7832ms)
+ℹ tests 116
+ℹ suites 0
+ℹ pass 116
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 148.2702

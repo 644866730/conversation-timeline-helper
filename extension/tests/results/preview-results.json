@@ -1,144 +1,144 @@
 {
   "mode": "LOCAL Chromium fixtures; real isolated worlds; mocked Chrome APIs; not a live account",
-  "version": "1.4.2",
-  "browser": "144.0.7559.96",
+  "version": "1.8.0",
+  "browser": "153.0.8010.12",
   "passed": 27,
   "failed": 0,
   "tests": [
     {
       "name": "Close button overlapping upper timeline dots reaches preview, not early message",
       "status": "passed",
-      "seconds": 2.73
+      "seconds": 2.65
     },
     {
       "name": "Immediate native autofocus to stale old attachment is corrected to actual viewport",
       "status": "passed",
-      "seconds": 2.57
+      "seconds": 2.58
     },
     {
       "name": "Escape close with delayed autofocus preserves reading position",
       "status": "passed",
-      "seconds": 2.67
+      "seconds": 2.52
     },
     {
       "name": "Backdrop close preserves reading position",
       "status": "passed",
-      "seconds": 2.66
+      "seconds": 2.54
     },
     {
       "name": "Already correct close performs zero extension scroll writes",
       "status": "passed",
-      "seconds": 2.52
+      "seconds": 2.53
     },
     {
       "name": "Inert aria-hidden and scroll-lock do not erase index or overwrite checkpoint",
       "status": "passed",
-      "seconds": 2.8
+      "seconds": 2.82
     },
     {
       "name": "Preview open pauses timeline hotkeys and makes no background navigation",
       "status": "passed",
-      "seconds": 4.29
+      "seconds": 4.25
     },
     {
       "name": "Preview DOM copies are never indexed as new conversation messages",
       "status": "passed",
-      "seconds": 2.57
+      "seconds": 2.54
     },
     {
       "name": "Layout height change restores message offset, not stale absolute scrollTop",
       "status": "passed",
-      "seconds": 2.57
+      "seconds": 2.52
     },
     {
       "name": "Replaced scroller resolves stable message identity on close",
       "status": "passed",
-      "seconds": 2.53
+      "seconds": 2.51
     },
     {
       "name": "Conversation change discards preview checkpoint",
       "status": "passed",
-      "seconds": 2.72
+      "seconds": 2.73
     },
     {
       "name": "New manual scrolling after close cancels remaining correction window",
       "status": "passed",
-      "seconds": 2.78
+      "seconds": 2.73
     },
     {
       "name": "New pointer action after close is not dragged back",
       "status": "passed",
-      "seconds": 2.66
+      "seconds": 2.61
     },
     {
       "name": "Nested previews resume only when final overlay is closed",
       "status": "passed",
-      "seconds": 2.87
+      "seconds": 2.81
     },
     {
       "name": "Native dialog showModal and Escape keep viewport",
       "status": "passed",
-      "seconds": 2.63
+      "seconds": 2.73
     },
     {
       "name": "Ordinary conversation clicks do not activate restoration",
       "status": "passed",
-      "seconds": 2.18
+      "seconds": 2.16
     },
     {
       "name": "Explicit old timeline navigation still works after preview closes",
       "status": "passed",
-      "seconds": 2.97
+      "seconds": 3.04
     },
     {
       "name": "Programmatic preview cancels in-flight page navigation",
       "status": "passed",
-      "seconds": 2.26
+      "seconds": 2.25
     },
     {
       "name": "Rapid close and reopen retains original checkpoint",
       "status": "passed",
-      "seconds": 2.84
+      "seconds": 2.85
     },
     {
       "name": "Teardown removes all pending restoration work",
       "status": "passed",
-      "seconds": 2.67
+      "seconds": 2.72
     },
     {
       "name": "Disabling while preview open discards checkpoint",
       "status": "passed",
-      "seconds": 2.54
+      "seconds": 2.51
     },
     {
       "name": "Guard persists no reading data and sends no native seek",
       "status": "passed",
-      "seconds": 2.56
+      "seconds": 2.52
     },
     {
       "name": "Document scrolling restores exact viewport after focus reset",
       "status": "passed",
-      "seconds": 2.8
+      "seconds": 2.88
     },
     {
       "name": "Hidden unrelated main does not suspend active conversation",
       "status": "passed",
-      "seconds": 1.73
+      "seconds": 1.9
     },
     {
       "name": "Fresh timeline shortcut during close cleanup overrides restoration",
       "status": "passed",
-      "seconds": 1.81
+      "seconds": 1.83
     },
     {
       "name": "Virtualized original viewport returns without invoking timeline navigation",
       "status": "passed",
-      "seconds": 3.18
+      "seconds": 3.21
     },
     {
       "name": "Column reverse negative scroll frame is restored after preview",
       "status": "passed",
-      "seconds": 3.16
+      "seconds": 3.21
     }
   ]
 }

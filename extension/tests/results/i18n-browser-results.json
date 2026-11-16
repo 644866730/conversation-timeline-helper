@@ -1,0 +1,99 @@
+{
+  "mode": "Offline local DOM fixtures and shared Chrome storage mock; not a native extension install",
+  "browser": "153.0.8010.12",
+  "executedAt": "2026-11-16T13:05:07Z",
+  "passed": 18,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Language selector offers auto and all eight native language names",
+      "status": "passed",
+      "seconds": 0.653
+    },
+    {
+      "name": "Changing the popup language updates content through cross-tab storage events without translating the conversation",
+      "status": "passed",
+      "seconds": 0.93
+    },
+    {
+      "name": "Gemini applies all eight languages immediately while preserving conversation text and bookmarks",
+      "status": "passed",
+      "seconds": 0.78
+    },
+    {
+      "name": "Invalid custom selector diagnostics follow each selected language without breaking the built-in adapter",
+      "status": "passed",
+      "seconds": 0.703
+    },
+    {
+      "name": "Language switching preserves search text, content focus, bookmark and open directory state",
+      "status": "passed",
+      "seconds": 0.637
+    },
+    {
+      "name": "A controller restart reuses the saved language preference",
+      "status": "passed",
+      "seconds": 0.615
+    },
+    {
+      "name": "All eight content languages fit a 350px directory without horizontal overflow",
+      "status": "passed",
+      "seconds": 0.937
+    },
+    {
+      "name": "All eight languages keep common settings within the native 400x592 popup when connected or disconnected",
+      "status": "passed",
+      "seconds": 1.332
+    },
+    {
+      "name": "Search placeholder, accessible label and button tooltip follow the chosen language",
+      "status": "passed",
+      "seconds": 0.547
+    },
+    {
+      "name": "Localized UI never treats conversation text or HTML-looking user content as translation markup",
+      "status": "passed",
+      "seconds": 0.553
+    },
+    {
+      "name": "Invalid stored language safely normalizes to auto without breaking either page",
+      "status": "passed",
+      "seconds": 0.531
+    },
+    {
+      "name": "The standalone options page switches language without closing its active tab or overwriting selector edits",
+      "status": "passed",
+      "seconds": 0.783
+    },
+    {
+      "name": "Auto language refreshes the open timeline and popup when the browser language changes",
+      "status": "passed",
+      "seconds": 0.53
+    },
+    {
+      "name": "An explicit language preference stays fixed when the browser language changes",
+      "status": "passed",
+      "seconds": 0.536
+    },
+    {
+      "name": "Auto language resolves browser locale en-US to en",
+      "status": "passed",
+      "seconds": 0.522
+    },
+    {
+      "name": "Auto language resolves browser locale ja-JP to ja",
+      "status": "passed",
+      "seconds": 0.613
+    },
+    {
+      "name": "Auto language resolves browser locale zh-HK to zh-TW",
+      "status": "passed",
+      "seconds": 0.556
+    },
+    {
+      "name": "Auto language resolves browser locale pt-BR to en",
+      "status": "passed",
+      "seconds": 0.546
+    }
+  ]
+}
