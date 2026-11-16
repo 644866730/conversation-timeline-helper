@@ -205,7 +205,7 @@
       else theme = darkPreference.matches ? 'dark' : 'light';
     }
     host.dataset.theme = theme; host.dataset.side = settings.side;
-    // Original bar is top:60px / bottom:40px; legacy verticalPosition is ignored.
+    // Keep the launcher and rail below native top actions; bottom remains 40px.
   }
   function updateVisibility() {
     widget.hidden = !settings.enabled || !railItems.length; panel.hidden = !settings.enabled || !panelOpen;
@@ -427,7 +427,7 @@
     scrollRoot = first ? A.findScrollParent(first.target) : A.findConversationScroller();
     const y = A.scrollTop(scrollRoot), top = A.viewportTop(scrollRoot);
     positions = railItems.map(item => item.target?.isConnected ? item.target.getBoundingClientRect().top - top + y : NaN);
-    timelineLayout = C.timelineGeometry(railItems, widget.clientHeight || Math.max(0, innerHeight - 100));
+    timelineLayout = C.timelineGeometry(railItems, widget.clientHeight || Math.max(0, innerHeight - 164));
     // One viewport, forever. Message count never changes canvas height.
     markers.style.height = '100%';
     renderMarkerWindow();

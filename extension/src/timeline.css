@@ -318,7 +318,7 @@ button svg{flex:none}
 .icon-button{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:12px;flex:none;color:var(--muted);transition:background-color .2s,color .2s}
 .icon-button:hover{background:var(--hover);color:var(--ink)}
 .icon-button[aria-pressed="true"],.icon-button.is-open{color:var(--accent);background:var(--tint)}
-.directory-launcher{position:fixed;right:5px;top:8px;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;width:44px;height:44px;font-size:11px;line-height:1.3;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--accent);pointer-events:auto;box-shadow:0 3px 12px #203b400a;transition:background-color .2s,color .2s}
+.directory-launcher{position:fixed;right:5px;top:72px;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;width:44px;height:44px;font-size:11px;line-height:1.3;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--accent);pointer-events:auto;box-shadow:0 3px 12px #203b400a;transition:background-color .2s,color .2s}
 .directory-launcher svg{width:16px;height:16px}
 .directory-launcher:hover,.directory-launcher[aria-expanded="true"]{background:var(--accent);color:var(--on-accent)}
 :host([data-side="left"]) .directory-launcher{right:auto;left:5px}
@@ -385,7 +385,7 @@ button svg{flex:none}
 .timeline-tooltip{font-family:var(--font);font-size:12px;animation:none!important;transition:opacity .2s}
 .timeline-tooltip.visible{animation:none}
 .timeline-tooltip-measure{position:fixed!important;left:-10000px!important;top:0!important;visibility:hidden!important;display:block!important;-webkit-line-clamp:unset!important;max-height:none!important;height:auto!important;transform:none!important;transition:none!important;animation:none!important}
-.chatgpt-timeline-bar{border:0;box-shadow:inset 0 0 0 1px var(--line);background:var(--surface);backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:12px;transition:background-color .2s}
+.chatgpt-timeline-bar{top:124px;height:calc(100vh - 164px);border:0;box-shadow:inset 0 0 0 1px var(--line);background:var(--surface);backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:12px;transition:background-color .2s}
 /* One fixed overview, no inner scrollbars; chronological rank stays unchanged. */
 .timeline-track,.timeline-track-content{height:100%;overflow:clip;scrollbar-width:none;overscroll-behavior:auto}
 .timeline-track::-webkit-scrollbar,.timeline-track-content::-webkit-scrollbar{display:none;width:0;height:0}

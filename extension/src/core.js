@@ -1,7 +1,7 @@
 /* 对话时间轴助手 — core and MIT-licensed upstream layout adaptation. No runtime dependencies. */
 (function (root) {
   'use strict';
-  const VERSION = '1.8.0';
+  const VERSION = '1.8.1';
   const HOST_ID = 'gpt-timeline-next-root';
   const SETTING_PREFIX = 'gtn:setting:';
   const STAR_PREFIX = 'gtn:star:';
