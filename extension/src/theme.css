@@ -1,0 +1,43 @@
+/* Soft Utility, https://www.stylekit.top/zh/styles/soft-utility.
+ * Shared offline palette for the injected UI and bundled settings pages. */
+:root, :host {
+  --font: Inter, system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --bg: #ffffff; --canvas: #f4f8f6; --surface: #f4f8f6; --hover: #eaf2ee;
+  --ink: #203b40; --muted: #557077; --line: #d8e3df;
+  --accent: #2d5b63; --accent-hover: #234b52; --on-accent: #ffffff;
+  --tint: #e3f2ec; --mint: #a9d8cc;
+  --gold: #85571b; --gold-bg: #fbefdc; --info: #425e85; --info-bg: #eaf0fb;
+  --danger: #934c49; --danger-bg: #f8eae7; --focus: #a9d8cc80;
+  --shadow: 0 8px 32px #203b4014;
+  --timeline-dot-color: #b5c8c2; --timeline-dot-active-color: var(--accent);
+  --timeline-star-color: var(--gold); --timeline-bar-bg: var(--surface);
+  --timeline-tooltip-bg: var(--bg); --timeline-tooltip-text: var(--ink);
+  --timeline-tooltip-border: var(--line); --timeline-tooltip-shadow: var(--shadow);
+  --timeline-tooltip-radius: 16px;
+}
+:root[data-theme="dark"], :host([data-theme="dark"]) {
+  color-scheme: dark;
+  --bg: #17292d; --canvas: #112126; --surface: #20363a; --hover: #294449;
+  --ink: #e5f0ed; --muted: #abc0bf; --line: #355157;
+  --accent: #a9d8cc; --accent-hover: #bde5da; --on-accent: #203b40;
+  --tint: #2a4746; --mint: #a9d8cc;
+  --gold: #f3c98b; --gold-bg: #453e2b; --info: #c9d6f2; --info-bg: #283c55;
+  --danger: #e6b7b0; --danger-bg: #432e32; --focus: #a9d8cc50;
+  --shadow: 0 8px 32px #00000030; --timeline-dot-color: #607c7b;
+}
+:host([data-theme]) {
+  --timeline-dot-active-color: var(--accent); --timeline-star-color: var(--gold);
+  --timeline-bar-bg: var(--surface); --timeline-tooltip-bg: var(--bg);
+  --timeline-tooltip-text: var(--ink); --timeline-tooltip-border: var(--line);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+    --bg: #17292d; --canvas: #112126; --surface: #20363a; --hover: #294449;
+    --ink: #e5f0ed; --muted: #abc0bf; --line: #355157;
+    --accent: #a9d8cc; --accent-hover: #bde5da; --on-accent: #203b40;
+    --tint: #2a4746; --gold: #f3c98b; --gold-bg: #453e2b;
+    --info: #c9d6f2; --info-bg: #283c55; --danger: #e6b7b0;
+    --danger-bg: #432e32; --focus: #a9d8cc50; --shadow: 0 8px 32px #00000030;
+  }
+}

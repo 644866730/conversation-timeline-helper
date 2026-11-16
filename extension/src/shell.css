@@ -1,17 +1,19 @@
-/* Shadow-root stylesheet. tools/sync_styles.py embeds this verbatim into styles.js. */
-:host{all:initial!important;position:fixed!important;inset:0 auto auto 0!important;width:0!important;height:0!important;z-index:2147483646!important;pointer-events:none!important;color-scheme:light!important;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif!important;font-size:13px!important;line-height:1.5!important;--bg:#fff;--surface:#f4f6f7;--hover:#edf1f2;--ink:#1c292b;--muted:#6c7c80;--line:#e3e9e9;--accent:#087f73;--tint:#e5f4ef;--gold:#b77810;--shadow:0 16px 55px #172f3521;--position:52vh}
-:host([data-theme="dark"]){color-scheme:dark!important;--bg:#202728;--surface:#2a3233;--hover:#323e3f;--ink:#eef5f3;--muted:#a1b1b1;--line:#3b4849;--accent:#64d9bf;--tint:#24483f;--gold:#f1bd61;--shadow:0 16px 55px #0005}
-*,*::before,*::after{box-sizing:border-box} [hidden]{display:none!important} button,input,select{font:inherit;color:inherit}button{appearance:none;cursor:pointer;background:none;border:0;padding:0}button:disabled{opacity:.35;cursor:default}button:not(.timeline-dot):focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}button{touch-action:manipulation}svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}button svg{flex:none} ::selection{background:var(--tint);color:var(--ink)}
-
-/* Inherit the original track geometry; only make the shadow boundary transparent to input. */
+/* Shadow boundary. Product colors live in theme.css. */
+:host{all:initial!important;position:fixed!important;inset:0 auto auto 0!important;width:0!important;height:0!important;z-index:2147483646!important;pointer-events:none!important;color-scheme:light!important;font-family:var(--font)!important;font-size:13px!important;line-height:1.6!important;-webkit-locale:inherit!important}
+:host([data-theme="dark"]){color-scheme:dark!important}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+button,input,select{font:inherit;color:inherit}
+button{appearance:none;cursor:pointer;background:none;border:0;padding:0;touch-action:manipulation}
+button:disabled{opacity:.45;cursor:default}
+button:not(.timeline-dot):focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+button svg{flex:none}
+::selection{background:var(--mint);color:var(--ink)}
 .chatgpt-timeline-bar{pointer-events:auto}
 .timeline-dot{outline:none}
 :host([data-side="left"]) .chatgpt-timeline-bar{right:auto;left:15px}
 .timeline-left-handle{touch-action:none}
-
-/* Preserve document language through the reset, so CJK fallback fonts match upstream. */
-:host{-webkit-locale:inherit!important}
-
 /* Native image/file dialogs own input and focus until close cleanup settles. */
 :host([data-preview-blocked]){display:none!important}
 :host([data-preview-blocked]) *{pointer-events:none!important}

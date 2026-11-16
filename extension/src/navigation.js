@@ -61,6 +61,7 @@
         keys: P.identities(m), witnesses: live.filter(n => n.key !== m.key && Number.isInteger(n.virtualIndex)).slice(0,6).map(n => [n.key,n.virtualIndex])});
     }
     async function nativeSeek(t, item) {
+      if (hooks.platform?.() === 'gemini' || (!hooks.platform && A.platform() === 'gemini')) return false;
       const p = points.get(item.key), witnesses = p?.witnesses || [];
       const calibrated = witnesses.some(([key,index]) => { const m = getItem(key); return m?.target?.isConnected && m.virtualIndex === index; });
       t.requestId = requestId();
@@ -85,14 +86,14 @@
       return false;
     }
     function loadButton(root, sign) {
-      const main = document.querySelector('main, [role="main"], #thread');
+      const main = A.conversationScope();
       if (!main) return null;
       const scope = root instanceof Element && root.contains(main) ? root : main;
       const older = /^(?:load|show) (?:earlier|older|previous|more) messages(?:[.…]+)?$|^(?:加载|显示)(?:更早|之前|更多)(?:的)?消息[。.…]*$/i;
       const newer = /^(?:load|show) (?:newer|next) messages(?:[.…]+)?$|^(?:加载|显示)(?:更新|后续)(?:的)?消息[。.…]*$/i;
       return Array.from(scope.querySelectorAll('button, [role="button"]')).find(b =>
         !b.disabled && b.getAttribute('aria-disabled') !== 'true' && b.getClientRects().length &&
-        !b.closest('form,nav,aside,[role="dialog"],[data-message-author-role],[data-turn],[data-turn-key],#gpt-timeline-next-root') &&
+        !b.closest('form,nav,aside,[role="dialog"],user-query,model-response,[data-message-author-role],[data-turn],[data-turn-key],#gpt-timeline-next-root') &&
         (sign < 0 ? older : newer).test((b.getAttribute('aria-label') || b.textContent || '').trim()));
     }
     async function align(t) {

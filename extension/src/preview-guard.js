@@ -7,7 +7,7 @@
   const A = global.GTNextAdapter;
   const MODALS = '[role="dialog"], [role="alertdialog"], [aria-modal="true"], dialog[open], ' +
     '[data-testid="image-lightbox"], [data-testid="image-viewer"], [data-testid="file-preview-modal"]';
-  const TURN = '[data-turn-key], [data-turn], [data-message-author-role], [data-content-search-unit-key], [data-testid^="conversation-turn-"]';
+  const TURN = A.MESSAGE_SELECTOR;
   function create(hooks) {
     let phase = 'idle', checkpoint = null, candidate = null, lastGood = null;
     let timer = 0, frame = 0, destroyed = false, endAt = 0, correcting = false;
@@ -31,7 +31,7 @@
       // Ordinary overflow:hidden is NOT a signal: ChatGPT uses it for its app shell.
       const lock = document.body?.getAttribute('data-scroll-locked');
       if (lock !== null && lock !== undefined && lock !== '0' && lock !== 'false') return true;
-      const mains = Array.from(document.querySelectorAll('main, [role="main"], #thread'));
+      const mains = [...new Set([...document.querySelectorAll('main, [role="main"], #thread'), A.conversationScope()].filter(Boolean))];
       const targets = hooks.items().map(item => item.target).filter(node => node?.isConnected);
       // An inactive/hidden second main (e.g. a canvas or old route) must not
       // disable the timeline belonging to the still-readable conversation.

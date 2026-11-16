@@ -1,9 +1,11 @@
 /* 对话时间轴助手 — content controller. All message text stays in this tab's memory. */
 (function () {
   'use strict';
-  const C = globalThis.GTNextCore, A = globalThis.GTNextAdapter;
-  if (!C || !A || !globalThis.chrome?.storage?.local || window.top !== window) return;
+  const C = globalThis.GTNextCore, A = globalThis.GTNextAdapter, I = globalThis.GTNextI18n;
+  if (!C || !A || !I || !globalThis.chrome?.storage?.local || window.top !== window) return;
   globalThis.__GTNextInstance?.destroy();
+  let uiLanguage = I.resolve('auto'), toastMessage = null;
+  const t = (key, values = {}) => I.t(key, values, uiLanguage);
 
   const paths = {
     timeline: 'M6 3v18M6 6h12M6 12h8M6 18h12M4 6h4M4 12h4M4 18h4',
@@ -13,7 +15,9 @@
     star: 'm12 3 2.78 5.63L21 9.54l-4.5 4.39 1.06 6.2L12 17.2l-5.56 2.93 1.06-6.2L3 9.54l6.22-.91Z',
     refresh: 'M20 7v5h-5M4 17v-5h5M6.2 6.2a8 8 0 0 1 13 2.2M4.8 15.6a8 8 0 0 0 13 2.2',
     first: 'M5 4h14M6 15l6-6 6 6M12 9v11', last: 'M5 20h14M6 9l6 6 6-6M12 15V4',
-    info: 'M12 11v6M12 7h.01M22 12A10 10 0 1 1 2 12a10 10 0 0 1 20 0'
+    info: 'M12 11v6M12 7h.01M22 12A10 10 0 1 1 2 12a10 10 0 0 1 20 0',
+    back: 'M9 5 4 10l5 5M4 10h10a6 6 0 0 1 0 12',
+    download: 'M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5'
   };
   const el = (tag, className, text) => {
     const node = document.createElement(tag);
@@ -38,10 +42,14 @@
   document.getElementById(C.HOST_ID)?.remove();
   const shadow = host.attachShadow({mode: 'open'});
   const style = el('style'); style.textContent = globalThis.GTNextCSS; shadow.append(style);
-  // Reborn14 circle/tooltip styling, with a new fixed-height rank layout. Search/extra controls
-  // live only in the opt-in directory, not in the original-style timeline.
+  // The compact launcher exposes the optional directory without changing rail geometry.
+  const launcher = button('toggle', '打开消息目录 · Alt+Shift+T', 'list', 'directory-launcher');
+  launcher.append(el('span', '', '目录'));
+  launcher.setAttribute('aria-expanded', 'false'); launcher.setAttribute('aria-controls', 'gtn-panel');
   const widget = el('nav', 'chatgpt-timeline-bar widget');
-  widget.setAttribute('aria-label', 'ChatGPT 对话时间轴');
+  const sitePlatform = () => C.platformFromURL(location.href) === 'unknown' ? A.platform() : C.platformFromURL(location.href);
+  const siteName = () => C.platformName(sitePlatform());
+  widget.setAttribute('aria-label', siteName() + ' 对话时间轴');
   const track = el('div', 'timeline-track track');
   const markers = el('div', 'timeline-track-content markers');
   track.append(markers); widget.append(track);
@@ -64,18 +72,31 @@
   starFilter.setAttribute('aria-pressed', 'false');
   const resultCount = el('span', 'result-count', '0 条'); filterRow.append(scopeSelect, starFilter, resultCount);
   const list = el('div', 'message-list'); list.setAttribute('role', 'list'); list.setAttribute('aria-label', '当前消息');
+  const nearbyBar = el('div', 'nearby-bar'); nearbyBar.hidden = true;
+  nearbyBar.setAttribute('role','group'); nearbyBar.setAttribute('aria-label','密集节点精确选择');
+  const nearbyLabel = el('span', 'nearby-label'); nearbyLabel.setAttribute('aria-live','polite');
+  const nearbyPrevious = button('nearby-previous', '前一组附近消息', 'up');
+  const nearbyNext = button('nearby-next', '后一组附近消息', 'down');
+  const nearbyExit = button('nearby-exit', '退出附近消息，恢复当前显示范围', null, 'text-button'); nearbyExit.textContent = '退出附近';
+  nearbyBar.append(nearbyLabel, nearbyPrevious, nearbyNext, nearbyExit);
   const footer = el('footer', 'panel-footer'), footerActions = el('div', 'footer-actions');
+  const readingActions = el('div', 'reading-actions');
+  const returnButton = button('return-reading', '返回刚才的阅读位置', 'back', 'text-button return-reading');
+  returnButton.append(el('span', '', '返回阅读处')); returnButton.disabled = true;
+  const readingPosition = el('span', 'reading-position', '当前已加载内容');
+  readingActions.append(returnButton, readingPosition);
   const firstButton = button('first', '跳到第一条消息', 'first', 'text-button'); firstButton.append(el('span', '', '首条'));
   const lastButton = button('last', '跳到最后一条消息', 'last', 'text-button'); lastButton.append(el('span', '', '末条'));
   const infoButton = button('info', '识别状态与快捷键', 'info', 'icon-button'); infoButton.setAttribute('aria-expanded', 'false');
   const rescan = button('rescan', '重新识别当前页面', 'refresh', 'text-button rescan'); rescan.append(el('span', '', '重新识别'));
   const diagnosticsBox = el('div', 'diagnostics'); diagnosticsBox.hidden = true;
-  footerActions.append(firstButton, lastButton, infoButton, rescan);
+  const exportButton = button('export-markdown', '导出当前列表为 Markdown', 'download', 'text-button'); exportButton.append(el('span','','导出'));
+  footerActions.append(firstButton, lastButton, exportButton, infoButton, rescan);
   const footnote = el('div', 'footnote', '仅已加载消息 · 点击节点才自动翻页定位');
   const historyLine = el('div', 'history-line'), historyLabel = el('span', '', '随页面加载自动更新');
   historyLine.append(historyLabel);
-  footer.append(footerActions, diagnosticsBox, footnote);
-  panel.append(panelHeader, historyLine, searchWrap, filterRow, list, footer);
+  footer.append(readingActions, footerActions, diagnosticsBox, footnote);
+  panel.append(panelHeader, historyLine, searchWrap, filterRow, nearbyBar, list, footer);
   const navigationNotice = el('div','navigation-notice'); navigationNotice.hidden = true;
   navigationNotice.setAttribute('role','status'); navigationNotice.setAttribute('aria-live','polite');
   const navigationLabel = el('span','navigation-label');
@@ -89,35 +110,32 @@
   tooltipMeasure.setAttribute('aria-hidden', 'true');
   const toastBox = el('div', 'toast'); toastBox.setAttribute('role', 'status'); toastBox.setAttribute('aria-live', 'polite'); toastBox.hidden = true;
   const focusRing = el('div', 'focus-ring'); focusRing.hidden = true;
-  shadow.append(widget, panel, tooltip, tooltipMeasure, toastBox, focusRing, navigationNotice);
+  shadow.append(launcher, widget, panel, tooltip, tooltipMeasure, toastBox, focusRing, navigationNotice);
   (document.body || document.documentElement).append(host);
 
   let data = {}, settings = {...C.DEFAULTS}, items = [], railItems = [], filtered = [], groups = [], activeKey = '', panelOpen = false;
   let query = '', starredOnly = false, route = C.routeFromURL(location.href), scope = C.scopeFromURL(location.href);
   let diagnostics = {adapter: '初始化', counts: {}, errors: []}, blocked = new Map();
-  let scrollRoot = document.scrollingElement, positions = [], renderSignature = '', starRevision = 0;
+  let scrollRoot = document.scrollingElement, positions = [], renderSignature = '', railSignature = '', starRevision = 0;
+  const returnHistory = [];
+  const expandedOutlines = new Set(), exportURLs = new Set();
+  let nearbyKey = '';
+  const NEARBY_SIZE = 10;
   let scanTimer = 0, frame = 0, toastTimer = 0, ringFrame = 0, routeTimer = 0, destroyed = false, pausedFollowUntil = 0;
   let lastSafetyScan = 0, scanCount = 0, lastScanMs = 0, storageError = false, renderEpoch = 0;
   let pressTimer = 0, pressOrigin = null, pressedNode = null, suppressedClickUntil = 0;
   let previewTimer = 0, previewFrame = 0, previewNode = null;
   let timelineLayout = {height: 0, y: [], ratios: [], normalized: [], diameters: []};
-  let activity = 0, navigationKey = '', navigationName = '', scrollDirection = 'newer', lastScrollPosition = null, lastScrollRoot = null;
+  let activity = 0, navigationKey = '', navigationName = '', navigationRestore = null, navigationSection = null, scrollDirection = 'newer', lastScrollPosition = null, lastScrollRoot = null;
   let previewGuard = null;
   const loadedIndex = globalThis.GTNextLoadedIndex.create();
   const navigator = globalThis.GTNextNavigation.create({
     items: () => items, scan: scanNow, route: () => C.routeFromURL(location.href),
+    platform: sitePlatform,
     enabled: () => settings.enabled && !destroyed && !previewGuard?.blocked,
     smooth: () => settings.smoothScroll && !reducedMotion.matches,
     direction: sign => { scrollDirection = sign < 0 ? 'older' : 'newer'; },
-    progress: status => {
-      navigationNotice.hidden = !['locating','failed'].includes(status.stage);
-      navigationRetry.hidden = status.stage !== 'failed';
-      navigationCancel.textContent = status.stage === 'failed' ? '关闭' : '取消';
-      navigationCancel.setAttribute('aria-label',status.stage === 'failed' ? '关闭提示' : '取消定位');
-      navigationLabel.textContent = status.stage === 'failed'
-        ? '网页暂未恢复目标消息，请重试。'
-        : `正在定位${navigationName}…${status.method === 'direct' ? '' : ' 自动换页中'}`;
-    }
+    progress: updateNavigationStatus
   });
 
   const ephemeralStars = new Set(), busyStars = new Set(), listeners = [];
@@ -127,15 +145,50 @@
     target.addEventListener(type, callback, options);
     listeners.push(() => target.removeEventListener(type, callback, options));
   }
-  function toast(message) {
-    toastBox.textContent = message; toastBox.hidden = false;
+  function toast(message, values = {}) {
+    toastMessage = {message,values,messageKey:message === '已定位到{name}' ? navigationKey : ''};
+    toastBox.textContent = t(message,values); toastBox.hidden = false;
     clearTimeout(toastTimer); toastTimer = setTimeout(() => { toastBox.hidden = true; }, 3000);
   }
   function starred(item) { return scope.persistent ? [item.key, ...(item.aliases || [])].some(k => !!data[C.starKey(scope, k)]) : ephemeralStars.has(item.key); }
-  function historySummary() { return `已加载过 ${items.length} 条 · 网页当前挂载 ${items.filter(m => m.target?.isConnected).length} 条`; }
+  function historySummary() { return t('已加载过 {count} 条 · 网页当前挂载 {mounted} 条',{count:items.length,mounted:items.filter(m=>m.target?.isConnected).length}); }
   function updateHistoryLine() {
-    historyLabel.textContent = historySummary(); historyLine.dataset.state = 'ready';
-    footnote.textContent = '不自动补全历史 · 点击旧节点，自动换页定位';
+    historyLabel.textContent = t('已加载 {count} 条消息 · 仅当前对话',{count:items.length}); historyLine.dataset.state = 'ready';
+    footnote.textContent = t('不自动补全历史 · 点击旧节点，自动换页定位');
+  }
+  function updateNavigationStatus(status) {
+    returnButton.disabled = !returnHistory.length || status.stage === 'locating';
+    navigationNotice.hidden = !['locating','failed'].includes(status.stage);
+    navigationRetry.hidden = status.stage !== 'failed';
+    navigationCancel.textContent = t(status.stage === 'failed' ? '关闭' : '取消');
+    navigationCancel.setAttribute('aria-label',t(status.stage === 'failed' ? '关闭提示' : '取消定位'));
+    navigationCancel.title = navigationCancel.getAttribute('aria-label');
+    const item = findItem(navigationKey);
+    navigationName = item ? describe(item) : navigationName;
+    navigationLabel.textContent = status.stage === 'failed' ? t('网页暂未恢复目标消息，请重试。') :
+      t('正在定位{name}…{paging}',{name:navigationName,paging:status.method === 'direct' ? '' : t(' 自动换页中')});
+  }
+  function applyLanguage() {
+    uiLanguage = I.resolve(settings.language);
+    host.lang = uiLanguage;
+    widget.setAttribute('aria-label',t('{site} 对话时间轴',{site:siteName()}));
+    const texts = [[launcher.querySelector('span'),'目录'],[title,'对话导航'],[starFilter.querySelector('span'),'收藏'],
+      [nearbyExit,'退出附近'],[returnButton.querySelector('span'),'返回阅读处'],[firstButton.querySelector('span'),'首条'],
+      [lastButton.querySelector('span'),'末条'],[exportButton.querySelector('span'),'导出'],[rescan.querySelector('span'),'重新识别'],[navigationRetry,'重试']];
+    for (const [node,key] of texts) node.textContent = t(key);
+    for (const [node,key] of [[panel,'消息目录'],[search,'搜索本页已加载过的消息'],[scopeSelect,'显示消息范围'],[list,'当前消息'],[nearbyBar,'密集节点精确选择']]) node.setAttribute('aria-label',t(key));
+    for (const [node,key] of [[panelHeader.querySelector('[data-action="close"]'),'收起目录 · Esc'],[clearSearch,'清空搜索'],[starFilter,'仅看收藏'],
+      [nearbyPrevious,'前一组附近消息'],[nearbyNext,'后一组附近消息'],[nearbyExit,'退出附近消息，恢复当前显示范围'],
+      [returnButton,'返回刚才的阅读位置'],[firstButton,'跳到第一条消息'],[lastButton,'跳到最后一条消息'],[infoButton,'识别状态与快捷键'],
+      [rescan,'重新识别当前页面'],[navigationRetry,'重试网页定位']]) { node.title=t(key); node.setAttribute('aria-label',t(key)); }
+    search.placeholder=t('搜索已加载消息或序号…');
+    scopeSelect.options[0].textContent=t('只看我的提问'); scopeSelect.options[1].textContent=t('提问与回复');
+    if (toastMessage && !toastBox.hidden) {
+      const target = toastMessage.messageKey && findItem(toastMessage.messageKey);
+      toastBox.textContent=t(toastMessage.message,target ? {...toastMessage.values,name:describe(target)} : toastMessage.values);
+    }
+    updateNavigationStatus(navigator.status()); updateVisibility(); updateHistoryLine();
+    renderSignature=''; railSignature='';
   }
 
   function updateTheme() {
@@ -145,6 +198,8 @@
       const explicit = html.getAttribute('data-theme') || html.getAttribute('data-color-mode') || body?.getAttribute('data-theme') || body?.getAttribute('data-color-mode') ||
         document.querySelector('main, [role="main"]')?.closest('[data-theme]')?.getAttribute('data-theme');
       if (explicit === 'dark' || explicit === 'light') theme = explicit;
+      else if (html.classList.contains('dark-theme') || body?.classList.contains('dark-theme')) theme = 'dark';
+      else if (html.classList.contains('light-theme') || body?.classList.contains('light-theme')) theme = 'light';
       else if (html.classList.contains('dark') || body?.classList.contains('dark')) theme = 'dark';
       else if (html.classList.contains('light') || body?.classList.contains('light')) theme = 'light';
       else theme = darkPreference.matches ? 'dark' : 'light';
@@ -154,13 +209,17 @@
   }
   function updateVisibility() {
     widget.hidden = !settings.enabled || !railItems.length; panel.hidden = !settings.enabled || !panelOpen;
+    launcher.hidden = !settings.enabled;
+    launcher.setAttribute('aria-expanded', String(panelOpen && settings.enabled));
+    launcher.setAttribute('aria-label', t(panelOpen ? '收起消息目录 · Alt+Shift+T' : '打开消息目录 · Alt+Shift+T'));
+    launcher.title = launcher.getAttribute('aria-label');
     if (!settings.enabled || !settings.showPreview) hidePreview();
   }
   function openPanel(open, focusSearch = false) {
     if (previewGuard?.check()) return;
     panelOpen = open; updateVisibility();
     if (open) { panel.classList.add('is-entering'); render(); if (focusSearch) search.focus({preventScroll: true}); }
-    else { hidePreview(); if (shadow.activeElement && panel.contains(shadow.activeElement)) markers.querySelector('.active, .timeline-dot')?.focus({preventScroll: true}); }
+    else { hidePreview(); if (shadow.activeElement && panel.contains(shadow.activeElement)) launcher.focus({preventScroll: true}); }
   }
   async function saveSetting(key, value) {
     if (!Object.hasOwn(C.DEFAULTS, key)) return;
@@ -168,7 +227,11 @@
     try { await chrome.storage.local.set({[C.SETTING_PREFIX + key]: safe}); }
     catch { toast('设置保存失败；扩展更新后请刷新此页面。'); }
   }
-  function describe(item) { return (item.role === 'user' ? '提问 ' : '回复 ') + item.roleOrdinal; }
+  function describe(item) { return t(item.role === 'user' ? '提问 {number}' : '回复 {number}',{number:item.roleOrdinal}); }
+  function itemText(item, preview = false) {
+    if (item.placeholder) return t(item.placeholder.key) + (item.placeholder.detail ? ' ' + item.placeholder.detail : '');
+    return preview ? item.preview : item.text || item.preview;
+  }
   async function toggleStar(key, quiet = false) {
     const item = items.find(entry => entry.key === key);
     if (!item || busyStars.has(key)) return;
@@ -197,8 +260,15 @@
   }
   function resetRoute(newRoute) {
     // URL can change BEFORE React commits the next conversation. Ignore unchanged old nodes.
-    blocked = new Map(items.filter(item => item.target).map(item => [item.target, item.domSignature || item.signature]));
+    // Gemini assigns the first conversation URL after the first prompt is mounted.
+    // That same prompt must survive the temporary -> stable route promotion.
+    const promoted = sitePlatform() === 'gemini' && !scope.persistent && C.scopeFromURL(location.href).persistent &&
+      /^\/(?:u\/\d+\/)?(?:app|gem\/[^/]+)$/.test(route) && newRoute.startsWith(route + '/') &&
+      !newRoute.slice(route.length + 1).includes('/');
+    blocked = promoted ? new Map() : new Map(items.filter(item => item.target).map(item => [item.target, item.domSignature || item.signature]));
     activity++; navigator.reset(); previewGuard?.reset(); navigationNotice.hidden = true; navigationKey = ''; loadedIndex.reset();
+    returnHistory.length = 0; navigationRestore = null; navigationSection = null; returnButton.disabled = true;
+    expandedOutlines.clear(); nearbyKey = '';
     route = newRoute; scope = C.scopeFromURL(location.href);
     items = []; railItems = []; filtered = []; positions = []; activeKey = ''; ephemeralStars.clear();
     scrollDirection = 'newer'; lastScrollPosition = null; lastScrollRoot = null; cancelPress();
@@ -240,7 +310,7 @@
       render(); updateGeometry(); updateActive(); updateTheme();
       if (!host.isConnected) (document.body || document.documentElement).append(host);
     } catch (error) {
-      diagnostics.errors = ['页面识别失败：' + String(error?.name || 'Error')];
+      diagnostics.errors = [t('页面识别失败：{error}',{error:String(error?.name || 'Error')})];
       // Never log conversation data or full exception objects.
       updateDiagnostics();
     }
@@ -248,50 +318,97 @@
     lastSafetyScan = Date.now();
   }
   function updateDiagnostics() {
-    diagnosticsBox.textContent = `识别器：${diagnostics.adapter}\n${historySummary()}\n${diagnostics.users || 0} 条提问 / ${diagnostics.assistants || 0} 条回复\n页面挂载：${diagnostics.domMessages || 0} 条\n` +
-      (scope.persistent ? '收藏：此浏览器本地保存\n' : '收藏：临时会话，仅本页有效\n') +
-      'Alt+Shift+T：展开/收起目录\nAlt+Shift+↑ / ↓：上一条/下一条\n' +
-      (diagnostics.errors?.length ? diagnostics.errors.join('\n') : '更多设置：浏览器工具栏的扩展图标');
+    diagnosticsBox.textContent = [t('识别器：{adapter}',{adapter:t(diagnostics.adapter)}),historySummary(),
+      t('{users} 条提问 / {assistants} 条回复',{users:diagnostics.users||0,assistants:diagnostics.assistants||0}),
+      t('页面挂载：{count} 条',{count:diagnostics.domMessages||0}),
+      t(scope.persistent ? '收藏：此浏览器本地保存' : '收藏：临时会话，仅本页有效'),
+      t('Alt+Shift+T：展开/收起目录'),t('Alt+Shift+↑ / ↓：上一条/下一条'),
+      diagnostics.errors?.length ? diagnostics.errors.join('\n') : t('更多设置：浏览器工具栏的扩展图标')].join('\n');
   }
   function render() {
     if (previewGuard?.blocked) return;
     railItems = items.filter(item => settings.includeAssistant || item.role === 'user');
-    filtered = railItems.filter(item => (!starredOnly || starred(item)) && C.matchesQuery(item, query));
-    subtitle.textContent = `${diagnostics.users || 0} 条提问 · ${diagnostics.assistants || 0} 条回复`;
-    resultCount.textContent = filtered.length + ' 条';
+    const nearbyStart = nearbyKey ? railItems.findIndex(item => item.key === nearbyKey) : -1;
+    if (nearbyStart < 0) nearbyKey = '';
+    const nearbyEnd = Math.min(railItems.length, nearbyStart + NEARBY_SIZE);
+    const candidates = nearbyKey ? railItems.slice(nearbyStart, nearbyEnd) : railItems;
+    filtered = candidates.filter(item => (!starredOnly || starred(item)) && C.matchesQuery(item, query));
+    nearbyBar.hidden = !nearbyKey;
+    nearbyLabel.textContent = nearbyKey ? t('附近 {start}–{end} / {total}',{start:nearbyStart+1,end:nearbyEnd,total:railItems.length}) : '';
+    nearbyPrevious.disabled = nearbyStart <= 0; nearbyNext.disabled = nearbyEnd >= railItems.length;
+    subtitle.textContent = t('{users} 条提问 · {assistants} 条回复',{users:diagnostics.users||0,assistants:diagnostics.assistants||0});
+    resultCount.textContent = t('{count} 条',{count:filtered.length});
     firstButton.disabled = lastButton.disabled = !filtered.length;
+    exportButton.disabled = !filtered.length;
+    exportButton.title = t('导出当前列表的 {count} 条已加载消息为 Markdown',{count:filtered.length});
+    exportButton.setAttribute('aria-label', exportButton.title);
     scopeSelect.value = settings.includeAssistant ? 'all' : 'user';
     starFilter.setAttribute('aria-pressed', String(starredOnly));
     updateDiagnostics(); updateVisibility(); updateHistoryLine();
     const capacity = railItems.length; // One marker per message; no grouping.
-    const signature = C.hash(railItems.map(item => item.key + ':' + item.preview).join('\n')) + ':' + starRevision + ':' + capacity + ':' + query + ':' + starredOnly + ':' + panelOpen + ':' + C.hash(filtered.map(item => item.key).join('|'));
+    const signature = uiLanguage + ':' + C.hash(railItems.map(item => item.signature || item.key + ':' + item.preview).join('\n')) + ':' + starRevision + ':' + capacity + ':' + query + ':' + starredOnly + ':' + panelOpen + ':' + nearbyKey + ':' + [...expandedOutlines].join('|') + ':' + C.hash(filtered.map(item => item.key).join('|'));
     if (signature === renderSignature) return;
     renderSignature = signature; renderEpoch++; cancelPress();
     const previewKey = previewNode?.dataset.key; hidePreview();
     const oldScroll = list.scrollTop;
     const focused = shadow.activeElement;
-    const focusedKey = focused?.dataset?.key, focusedAction = focused?.dataset?.action;
+    const focusedKey = focused?.dataset?.key, focusedAction = focused?.dataset?.action, focusedHeading = Number(focused?.dataset?.heading);
     const fragment = document.createDocumentFragment(); rowMap.clear();
     for (const item of panelOpen ? filtered : []) {
       const row = el('div', 'message-row'); row.dataset.role = item.role; row.setAttribute('role', 'listitem');
-      const go = button('goto', describe(item) + '：' + item.preview, null, 'message-link'); go.dataset.key = item.key;
+      const go = button('goto', describe(item) + '：' + itemText(item,true), null, 'message-link'); go.dataset.key = item.key;
       const meta = el('div', 'row-meta'); meta.append(el('span', 'row-dot'), el('span', '', describe(item)), el('span', '', '· #' + item.ordinal));
-      go.append(meta, el('div', 'row-preview', item.preview));
-      const star = button('star', starred(item) ? '取消收藏' : '收藏这条消息', 'star', 'icon-button star-button');
+      const preview = el('div', 'row-preview');
+      if (query.trim()) {
+        const segments = C.queryPreview(item, query);
+        for (const segment of segments) preview.append(segment.match ? el('mark', '', segment.text) : document.createTextNode(segment.text));
+        go.setAttribute('aria-label', describe(item) + '：' + segments.map(segment => segment.text).join(''));
+      } else preview.textContent = itemText(item,true);
+      go.append(meta, preview);
+      const body = el('div','message-body'); body.append(go);
+      const headingLinks = [], outline = item.outline || [];
+      let outlineToggle = null;
+      if (outline.length) {
+        const expanded = expandedOutlines.has(item.key), id = 'outline-' + C.hash(item.key);
+        outlineToggle = button('toggle-outline', t('展开或收起{name}的章节目录',{name:describe(item)}), null, 'outline-toggle');
+        outlineToggle.dataset.key = item.key; outlineToggle.setAttribute('aria-expanded',String(expanded)); outlineToggle.setAttribute('aria-controls',id);
+        outlineToggle.textContent = t(expanded ? '收起章节 · {count}' : '查看章节 · {count}',{count:outline.length});
+        body.append(outlineToggle);
+        if (expanded) {
+          const headingList = el('div','outline-links'); headingList.id = id; headingList.setAttribute('role','group'); headingList.setAttribute('aria-label',t('{name}的章节',{name:describe(item)}));
+          const minimum = Math.min(...outline.map(h => h.level));
+          for (const heading of outline) {
+            const link = button('heading', heading.text, null, 'heading-link'); link.textContent = heading.text;
+            link.dataset.key = item.key; link.dataset.heading = String(heading.index);
+            link.style.setProperty('--outline-depth',String(Math.min(3,heading.level - minimum)));
+            headingLinks.push(link); headingList.append(link);
+          }
+          body.append(headingList);
+        } else { const collapsed = el('div','outline-links'); collapsed.id = id; collapsed.hidden = true; body.append(collapsed); }
+      }
+      const star = button('star', t(starred(item) ? '取消收藏' : '收藏这条消息'), 'star', 'icon-button star-button');
       star.dataset.key = item.key; star.setAttribute('aria-pressed', String(starred(item)));
-      row.append(go, star); fragment.append(row); rowMap.set(item.key, {row, go, star});
+      row.append(body, star); fragment.append(row); rowMap.set(item.key, {row, go, star, outlineToggle, headingLinks});
     }
     if (!filtered.length) {
       const empty = el('div', 'empty'); empty.append(icon('timeline'));
       const hasItems = items.length > 0;
-      empty.append(el('strong', '', hasItems ? '没有符合条件的消息' : '还没有识别到消息'));
-      empty.append(el('span', '', hasItems ? '试试更短的关键词、切换范围，或关闭收藏筛选。' : '请打开一段对话。内容已显示但这里仍为空时，可重新识别，或在扩展设置中查看诊断、配置备用选择器。'));
+      empty.append(el('strong', '', t(hasItems ? '没有符合条件的消息' : '还没有识别到消息')));
+      empty.append(el('span', '', t(hasItems ? '试试更短的关键词、切换范围，或关闭收藏筛选。' : '请打开一段对话。内容已显示但这里仍为空时，可重新识别，或在扩展设置中查看诊断、配置备用选择器。')));
       fragment.append(empty);
     }
     list.replaceChildren(fragment); list.scrollTop = oldScroll;
-    if (focusedKey && rowMap.has(focusedKey)) rowMap.get(focusedKey)[focusedAction === 'star' ? 'star' : 'go'].focus({preventScroll: true});
-    groups = railItems.map(item => [item]); markerNodes.length = 0;
-    markers.replaceChildren();
+    if (focusedKey && rowMap.has(focusedKey)) {
+      const row = rowMap.get(focusedKey);
+      const target = focusedAction === 'heading' ? row.headingLinks[focusedHeading] : focusedAction === 'toggle-outline' ? row.outlineToggle : row[focusedAction === 'star' ? 'star' : 'go'];
+      target?.focus({preventScroll: true});
+    }
+    const nextRailSignature = uiLanguage + ':' + C.hash(railItems.map(item => item.key + ':' + item.preview).join('\n')) + ':' + starRevision;
+    if (nextRailSignature !== railSignature) {
+      railSignature = nextRailSignature;
+      groups = railItems.map(item => [item]); markerNodes.length = 0;
+      markers.replaceChildren();
+    }
     updateGeometry(); paintActive();
     const restoredPreview = markerNodes.find(node => node?.dataset.key === previewKey);
     if (restoredPreview) showPreview(restoredPreview);
@@ -320,7 +437,7 @@
     groups.forEach((group, index) => {
       const item = group[0]; let node = markerNodes[index];
       if (!node) {
-        node = button('marker', describe(item) + '：' + item.preview, null, 'timeline-dot marker');
+        node = button('marker', describe(item) + '：' + itemText(item,true), null, 'timeline-dot marker');
         node.removeAttribute('title'); node.dataset.group = String(index); node.dataset.key = item.key;
         node.dataset.role = item.role; node.dataset.targetTurnId = item.key;
         markers.append(node); markerNodes[index] = node;
@@ -343,6 +460,8 @@
     return event.target.closest?.('.marker');
   }
   function paintActive() {
+    const active = railItems.findIndex(item => item.key === activeKey);
+    readingPosition.textContent = active < 0 ? t('当前已加载内容') : t('第 {current} / {total} 条 · 已加载',{current:active+1,total:railItems.length});
     for (const [key, row] of rowMap) {
       const active = key === activeKey; row.row.classList.toggle('is-active', active);
       if (active) row.go.setAttribute('aria-current', 'true'); else row.go.removeAttribute('aria-current');
@@ -385,18 +504,90 @@
     frame = requestAnimationFrame(() => { frame = 0; updateGeometry(); updateActive(); });
   }
   function findItem(key) { return items.find(item => item.key === key) || items.find(item => item.aliases?.includes(key)); }
-  async function jump(key) {
+  function readingPoint() {
+    const root = A.findConversationScroller(), anchor = A.viewportTop(root) + referenceY() - A.scrollTop(scrollRoot);
+    const live = items.filter(item => item.target?.isConnected);
+    const current = live.filter(item => item.target.getBoundingClientRect().top <= anchor).at(-1) || live[0];
+    return current ? {key: current.key, offset: current.target.getBoundingClientRect().top - A.viewportTop(root), route} : null;
+  }
+  async function jump(key, restore = null, section = null) {
     if (previewGuard?.check()) return;
     if (checkRoute()) { toast('会话正在切换，请稍后重新选择。'); return; }
     const item = findItem(key); if (!item) return;
-    activity++; navigationKey = item.key; navigationName = describe(item);
+    const origin = restore ? null : readingPoint();
+    const epoch = ++activity, routeAtStart = route;
+    navigationKey = item.key; navigationName = describe(item); navigationRestore = restore; navigationSection = section;
     hidePreview(); cancelAnimationFrame(ringFrame); focusRing.hidden = true;
     const result = await navigator.jump(item.key);
-    if (!result.ok || destroyed) return;
+    if (!result.ok || destroyed || epoch !== activity || route !== routeAtStart) return;
+    let sectionLocated = false;
+    if (section) {
+      const nodes = A.outlineNodes(result.item.content || result.item.target);
+      const same = node => C.excerpt(node.textContent,160) === section.text;
+      const target = nodes[section.index] && same(nodes[section.index]) ? nodes[section.index] : nodes.find(same);
+      if (target?.isConnected) {
+        const root = A.findScrollParent(target), bounds = A.scrollBounds(root), offset = Math.max(20,84 - A.viewportTop(root));
+        const top = C.clamp(A.scrollTop(root) + target.getBoundingClientRect().top - A.viewportTop(root) - offset,bounds.min,bounds.max);
+        if (A.isDocumentScroller(root)) window.scrollTo({top,behavior:'instant'}); else root.scrollTo({top,behavior:'instant'});
+        sectionLocated = true;
+      }
+    }
+    if (restore) {
+      const target = result.item.target;
+      if (target?.isConnected) {
+        const root = A.findScrollParent(target), bounds = A.scrollBounds(root);
+        const top = C.clamp(A.scrollTop(root) + target.getBoundingClientRect().top - A.viewportTop(root) - restore.offset, bounds.min, bounds.max);
+        if (A.isDocumentScroller(root)) window.scrollTo({top, behavior: 'instant'});
+        else root.scrollTo({top, behavior: 'instant'});
+      }
+      if (returnHistory.at(-1) === restore) returnHistory.pop();
+    } else if (origin && (section || origin.key !== item.key || Math.abs(origin.offset - 84) > 12)) {
+      returnHistory.push(origin); if (returnHistory.length > 20) returnHistory.shift();
+    }
+    returnButton.disabled = !returnHistory.length;
     // Only a real, revalidated message in the native chat is a successful jump.
     activeKey = result.item.key; paintActive(); scrollListTo(activeKey, false);
-    toast('已定位到' + describe(result.item));
+    if (restore) toast('已返回刚才的阅读位置');
+    else if (section) toast(sectionLocated ? '已定位章节：{title}' : '章节已变化，已定位到所在回复。',{title:C.excerpt(section.text,50)});
+    else toast('已定位到{name}',{name:describe(result.item)});
 
+  }
+  function returnToReading() {
+    const point = returnHistory.at(-1);
+    if (point && point.route === route) void jump(point.key, point);
+  }
+  function showNearby(index) {
+    activity++; navigator.cancel('nearby'); hidePreview();
+    const range = C.nearbyWindow(railItems.length,index,NEARBY_SIZE);
+    nearbyKey = railItems[range.start]?.key || '';
+    query = ''; search.value = ''; clearSearch.hidden = true; starredOnly = false;
+    renderSignature = ''; openPanel(true);
+    rowMap.get(railItems[index]?.key)?.go.focus({preventScroll:true});
+  }
+  function pageNearby(delta) {
+    const start = railItems.findIndex(item => item.key === nearbyKey);
+    nearbyKey = railItems[C.clamp(start + delta * NEARBY_SIZE,0,Math.max(0,railItems.length - NEARBY_SIZE))]?.key || '';
+    renderSignature = ''; render(); list.scrollTop = 0;
+  }
+  function exportMarkdown() {
+    if (!filtered.length || previewGuard?.blocked) return;
+    try {
+      let fallbacks = 0;
+      const entries = filtered.map(item => {
+        let text = '';
+        try { if (item.content?.isConnected && !item.truncated) text = A.toMarkdown(item.content,uiLanguage); } catch { /* Use the observed text below. */ }
+        if (!text) { text = String(itemText(item)).replace(/</g,'&lt;').replace(/>/g,'&gt;'); fallbacks++; }
+        return '## ' + describe(item) + '\n\n' + (item.truncated ? '> '+t('本条正文缓存已截断。')+'\n\n' : '') + text;
+      });
+      const scopeLabel = t(nearbyKey ? '附近消息' : starredOnly ? '收藏列表' : query ? '搜索结果' : '当前显示列表');
+      const note = fallbacks ? '\n> '+t('{count} 条消息使用已加载的纯文本缓存，部分格式不可用。',{count:fallbacks}) : '';
+      const body = '# '+t('对话导出')+'\n\n> '+t('范围：{scope}，{count} 条已加载消息。未加载内容不包含。',{scope:scopeLabel,count:entries.length})+note+'\n\n'+entries.join('\n\n---\n\n')+'\n';
+      const url = URL.createObjectURL(new Blob([body],{type:'text/markdown;charset=utf-8'})); exportURLs.add(url);
+      const link = el('a'); link.href = url; link.download = sitePlatform() + '-messages-' + new Date().toLocaleDateString('sv-SE') + '.md';
+      shadow.append(link); link.click(); link.remove();
+      setTimeout(() => { URL.revokeObjectURL(url); exportURLs.delete(url); },3000);
+      toast('已导出 {count} 条已加载消息',{count:entries.length});
+    } catch { toast('导出失败，请稍后重试。'); }
   }
   function step(delta) {
     if (!railItems.length) return;
@@ -418,7 +609,7 @@
     const placement = rightAvail > leftAvail ? 'right' : 'left';
     const available = Math.min(288, placement === 'left' ? leftAvail : rightAvail);
     const width = [280, 240, 200, 160].find(w => w <= available) || Math.max(40, Math.min(available, innerWidth - 16));
-    const full = (starred(item) ? '★ ' : '') + C.normalizeText(item.text || item.preview);
+    const full = (starred(item) ? '★ ' : '') + C.normalizeText(itemText(item));
     // Same single-text, max-three-line tooltip; no metadata header or footer.
     tooltipMeasure.style.width = width + 'px'; tooltipMeasure.textContent = full;
     let shown = full;
@@ -463,14 +654,22 @@
     if (!node) return;
     const action = node.dataset.action;
     if (action === 'cancel-jump') { navigator.cancel('user'); navigationNotice.hidden = true; return; }
-    if (action === 'retry-jump') { void jump(navigationKey); return; }
+    if (action === 'retry-jump') { void jump(navigationKey, navigationRestore, navigationSection); return; }
 
     if (action === 'marker' && Date.now() < suppressedClickUntil) { event.preventDefault(); return; }
     switch (action) {
       case 'toggle': openPanel(!panelOpen); break;
       case 'close': openPanel(false); break;
       case 'goto': jump(node.dataset.key); break;
+      case 'toggle-outline': if (expandedOutlines.has(node.dataset.key)) expandedOutlines.delete(node.dataset.key); else expandedOutlines.add(node.dataset.key); renderSignature = ''; render(); break;
+      case 'heading': {
+        const section = findItem(node.dataset.key)?.outline?.[Number(node.dataset.heading)];
+        if (section) void jump(node.dataset.key,null,{index:section.index,text:section.text}); break;
+      }
+      case 'return-reading': returnToReading(); break;
       case 'marker': {
+        const index = Number(node.dataset.group);
+        if (event.detail > 0 && C.isDense(timelineLayout.y,index)) { showNearby(index); break; }
         const group = groups[Number(node.dataset.group)];
         if (group?.length > 1) { openPanel(true); scrollListTo(group[0].key, true); }
         if (group?.length) jump(group[0].key);
@@ -481,14 +680,18 @@
       case 'next': step(1); break;
       case 'first': if (filtered.length) jump(filtered[0].key); break;
       case 'last': if (filtered.length) jump(filtered.at(-1).key); break;
-      case 'rescan': scanNow(); toast(`已识别 ${items.length} 条已加载消息`); break;
+      case 'rescan': scanNow(); toast('已识别 {count} 条已加载消息',{count:items.length}); break;
+      case 'export-markdown': exportMarkdown(); break;
+      case 'nearby-previous': pageNearby(-1); break;
+      case 'nearby-next': pageNearby(1); break;
+      case 'nearby-exit': nearbyKey = ''; filterChanged(); break;
       case 'clear-search': search.value = ''; query = ''; clearSearch.hidden = true; filterChanged(); search.focus(); break;
-      case 'filter-stars': starredOnly = !starredOnly; filterChanged(); break;
+      case 'filter-stars': nearbyKey = ''; starredOnly = !starredOnly; filterChanged(); break;
       case 'info': diagnosticsBox.hidden = !diagnosticsBox.hidden; infoButton.setAttribute('aria-expanded', String(!diagnosticsBox.hidden)); break;
     }
   });
-  on(search, 'input', () => { query = search.value; clearSearch.hidden = !query; filterChanged(); });
-  on(scopeSelect, 'change', () => { void saveSetting('includeAssistant', scopeSelect.value === 'all'); });
+  on(search, 'input', () => { nearbyKey = ''; query = search.value; clearSearch.hidden = !query; filterChanged(); });
+  on(scopeSelect, 'change', () => { nearbyKey = ''; void saveSetting('includeAssistant', scopeSelect.value === 'all'); });
   on(list, 'wheel', () => { pausedFollowUntil = Date.now() + 4000; }, {passive: true});
   on(list, 'pointerdown', () => { pausedFollowUntil = Date.now() + 4000; }, {passive: true});
   on(markers, 'pointerover', event => { const node = event.target.closest?.('.marker'); if (node) showPreview(node); });
@@ -542,8 +745,18 @@
     else if (settings.keyboard && !event.isComposing && event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && event.code === 'KeyF') { event.preventDefault(); openPanel(true, true); }
     else if (settings.keyboard && !event.isComposing && event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && ['ArrowUp', 'ArrowDown'].includes(event.code) && !event.target.closest?.('input, textarea, select')) { event.preventDefault(); step(event.code === 'ArrowUp' ? -1 : 1); }
     else if (event.key === 'Escape') { event.preventDefault(); if (navigator.busy || !navigationNotice.hidden) { navigator.cancel('user'); navigationNotice.hidden = true; } else openPanel(false); }
-    else if (event.key === 'Enter' && event.target === search && filtered.length) { event.preventDefault(); jump(filtered[0].key); }
-    else if (event.key === 'ArrowDown' && event.target === search && filtered.length) { event.preventDefault(); rowMap.get(filtered[0].key)?.go.focus(); }
+    else if (!event.isComposing && event.key === 'Enter' && event.target === search && filtered.length) { event.preventDefault(); jump(filtered[0].key); }
+    else if (!event.isComposing && event.key === 'ArrowDown' && event.target === search && filtered.length) { event.preventDefault(); rowMap.get(filtered[0].key)?.go.focus(); }
+    else if (!event.isComposing && event.target.matches?.('.message-link') && ['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) {
+      event.preventDefault();
+      const index = filtered.findIndex(item => item.key === event.target.dataset.key);
+      const next = event.key === 'Home' ? 0 : event.key === 'End' ? filtered.length - 1 : C.clamp(index + (event.key === 'ArrowUp' ? -1 : 1), 0, filtered.length - 1);
+      rowMap.get(filtered[next]?.key)?.go.focus();
+    }
+    else if (!event.isComposing && event.target.matches?.('.heading-link') && ['ArrowUp','ArrowDown'].includes(event.key)) {
+      event.preventDefault(); const links = rowMap.get(event.target.dataset.key)?.headingLinks || [];
+      const index = links.indexOf(event.target); links[C.clamp(index + (event.key === 'ArrowUp' ? -1 : 1),0,links.length - 1)]?.focus();
+    }
   });
   on(document, 'keydown', event => {
     if (previewGuard?.check() || !settings.enabled || !settings.keyboard || event.isComposing || event.repeat || !event.altKey || !event.shiftKey || event.ctrlKey || event.metaKey || event.composedPath().includes(host)) return;
@@ -559,6 +772,10 @@
   on(document, 'visibilitychange', () => { if (document.hidden) navigator.cancel('hidden'); if (!document.hidden) { checkRoute(); scheduleScan(80); } });
   on(document, 'load', event => { if (event.target instanceof HTMLImageElement) scheduleScan(100); }, true);
   on(darkPreference, 'change', updateTheme);
+  on(window, 'languagechange', () => {
+    if (settings.language !== 'auto') return;
+    applyLanguage(); render(); updateGeometry(); updateActive();
+  });
 
   const observer = new MutationObserver(records => {
     if (!settings.enabled || destroyed) return;
@@ -566,7 +783,7 @@
     if (records.some(record => record.target !== host && !host.contains(record.target))) { checkRoute(); scheduleScan(); }
   });
   observer.observe(document.documentElement, {subtree: true, childList: true, characterData: true, attributes: true,
-    attributeFilter: ['data-message-author-role', 'data-message-id', 'data-turn-key', 'data-turn', 'data-content-search-unit-key', 'data-chatgpt-search-unit-key', 'data-chatgpt-selection-message-id', 'data-chatgpt-search-message-ids', 'data-user-message-bubble', 'hidden', 'aria-hidden']});
+    attributeFilter: ['data-message-author-role', 'data-message-id', 'data-turn-key', 'data-turn', 'data-content-search-unit-key', 'data-chatgpt-search-unit-key', 'data-chatgpt-selection-message-id', 'data-chatgpt-search-message-ids', 'data-user-message-bubble', 'data-response-id', 'id', 'hidden', 'aria-hidden']});
   const themeObserver = new MutationObserver(updateTheme);
   themeObserver.observe(document.documentElement, {attributes: true, attributeFilter: ['class', 'data-theme', 'data-color-mode', 'style']});
   if (document.body) themeObserver.observe(document.body, {attributes: true, attributeFilter: ['class', 'data-theme', 'data-color-mode', 'style']});
@@ -584,8 +801,9 @@
     if (changedStars) starRevision++;
     if (changedSettings) {
       settings = C.settingsFromStorage(data);
+      applyLanguage();
       renderSignature = ''; updateTheme(); updateVisibility();
-      if (!settings.enabled) { activity++; navigator.reset(); previewGuard?.reset(); navigationNotice.hidden = true; loadedIndex.reset(); items = []; railItems = []; filtered = []; diagnostics = {...diagnostics, users: 0, assistants: 0}; cancelAnimationFrame(ringFrame); focusRing.hidden = true; render(); }
+      if (!settings.enabled) { activity++; navigator.reset(); previewGuard?.reset(); navigationNotice.hidden = true; returnHistory.length = 0; expandedOutlines.clear(); nearbyKey = ''; returnButton.disabled = true; loadedIndex.reset(); items = []; railItems = []; filtered = []; diagnostics = {...diagnostics, users: 0, assistants: 0}; cancelAnimationFrame(ringFrame); focusRing.hidden = true; render(); }
       else scanNow();
     } else if (changedStars) { render(); updateGeometry(); updateActive(); }
   }
@@ -598,7 +816,7 @@
   }, {capture: true, passive: true});
   chrome.storage.onChanged.addListener(storageChanged);
   function getStatus() {
-    return {ok: true, version: C.VERSION, enabled: settings.enabled, loaded: items.length, users: diagnostics.users || 0,
+    return {ok: true, version: C.VERSION, language:uiLanguage, platform:sitePlatform(), platformName:siteName(), enabled: settings.enabled, loaded: items.length, users: diagnostics.users || 0,
       assistants: diagnostics.assistants || 0, visible: railItems.length, matched: filtered.length, adapter: diagnostics.adapter, theme: host.dataset.theme,
       persistentBookmarks: scope.persistent, storageError,
       history: {stage: 'observing', complete: false, indexed: items.length,
@@ -606,14 +824,14 @@
       navigation: navigator.status(),
       preview: previewGuard?.status(),
       diagnostics: {...diagnostics, scanCount, lastScanMs},
-      limits: ['仅本次页面实际加载过的消息；刷新或切换会话后重新建立', '点击已加载节点时按需自动翻页定位；失败提示重试，不弹缓存正文', '每条正文最多120000字符；超出总缓存预算时仅保留摘要与节点'],
+      limits: ['仅本次页面实际加载过的消息；刷新或切换会话后重新建立', '点击已加载节点时按需自动翻页定位；失败提示重试，不弹缓存正文', '每条正文最多120000字符；超出总缓存预算时仅保留摘要与节点'].map(key=>t(key)),
       // Deliberately no URL, conversation IDs, message IDs, search query or message text.
       panelOpen};
   }
   function messageListener(message, sender, respond) {
     if (sender.id !== chrome.runtime.id || destroyed || !message?.type?.startsWith('GTN_')) return;
     if (message.type === 'GTN_STATUS') { respond(getStatus()); return; }
-    if (message.type === 'GTN_RESET_INDEX') { navigator.reset(); navigationNotice.hidden = true; loadedIndex.reset(); items = []; renderSignature = ''; scanNow(); respond(getStatus()); return; }
+    if (message.type === 'GTN_RESET_INDEX') { navigator.reset(); navigationNotice.hidden = true; returnHistory.length = 0; expandedOutlines.clear(); nearbyKey = ''; returnButton.disabled = true; loadedIndex.reset(); items = []; renderSignature = ''; scanNow(); respond(getStatus()); return; }
     if (message.type === 'GTN_RESCAN') { scanNow(); respond(getStatus()); return; }
     if (message.type === 'GTN_OPEN') { openPanel(true, true); respond({ok: true}); return; }
     if (message.type === 'GTN_STEP') { step(message.delta === -1 ? -1 : 1); respond({ok: true}); }
@@ -624,7 +842,8 @@
     clearInterval(routeTimer); clearTimeout(scanTimer); clearTimeout(toastTimer); cancelPress(); hidePreview();
     cancelAnimationFrame(frame); cancelAnimationFrame(ringFrame); listeners.forEach(remove => remove());
     try { chrome.storage.onChanged.removeListener(storageChanged); chrome.runtime.onMessage.removeListener(messageListener); } catch { /* Context invalidated. */ }
-    host.remove(); items = []; railItems = []; filtered = []; rowMap.clear(); data = {};
+    host.remove(); items = []; railItems = []; filtered = []; returnHistory.length = 0; rowMap.clear(); data = {};
+    expandedOutlines.clear(); exportURLs.forEach(url => URL.revokeObjectURL(url)); exportURLs.clear();
   }
   globalThis.__GTNextInstance = {destroy};
   // Idle route lifecycle and DOM rescans only. Navigation runs exclusively after a user jump.
@@ -638,6 +857,6 @@
     try { data = await chrome.storage.local.get(null); settings = C.settingsFromStorage(data); }
     catch { storageError = true; toast('无法读取扩展设置。扩展更新后，请刷新页面。'); }
     if (destroyed) return;
-    updateTheme(); updateVisibility(); if (settings.enabled) scanNow(); else render();
+    applyLanguage(); updateTheme(); updateVisibility(); if (settings.enabled) scanNow(); else render();
   })();
 })();
