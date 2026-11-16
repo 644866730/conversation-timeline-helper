@@ -25,10 +25,10 @@ def main():
         opts={'headless':not args.headed,'args':['--no-sandbox']}
         if args.chromium:opts['executable_path']=args.chromium
         browser=p.chromium.launch(**opts)
-        context=browser.new_context(viewport={'width':1440,'height':1000},reduced_motion='reduce')
+        context=browser.new_context(viewport={'width':1440,'height':1000},reduced_motion='reduce',locale='zh-CN')
         page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
         page.set_content(html('demo/index.html'));page.add_style_tag(content=read('demo/demo.css'))
-        for f in ['demo/fixture.js','tests/browser-mock.js','src/core.js','src/loaded-index.js','src/adapter.js','src/navigation-core.js','src/navigation.js','src/preview-guard.js','src/styles.js']:page.add_script_tag(content=read(f))
+        for f in ['demo/fixture.js','tests/browser-mock.js','src/i18n.js','src/core.js','src/loaded-index.js','src/adapter.js','src/navigation-core.js','src/navigation.js','src/preview-guard.js','src/styles.js']:page.add_script_tag(content=read(f))
         page.evaluate("globalThis.__testLocation={href:'https://chatgpt.com/c/start'}")
         source='((location)=>{\n'+read('src/content.js')+'\n})(globalThis.__testLocation);'
         page.add_script_tag(content=source);expect.set_options(timeout=3500)
@@ -112,6 +112,72 @@ def main():
             reset();ui.locator('.search-input').fill('新版 页面');count(1);expect(rows.nth(0)).to_contain_text('新版页面结构')
             ui.locator('.clear-search').click();count(8);ui.locator('.search-input').fill('no-match-419');count(0)
         run('Chinese multi-term search, clear and no-result state',search_test)
+        def hit_context():
+            reset();setting('includeAssistant',True);ui.locator('.search-input').fill('外部服务');count(1)
+            expect(rows.first.locator('mark')).to_have_text('外部服务')
+            expect(rows.first).to_contain_text('不必依赖外部服务')
+        run('Long-reply search shows the literal match in its surrounding context',hit_context)
+        def directory_launcher():
+            reset();ui.locator('[data-action=close]').click();expect(ui.locator('.directory-launcher')).to_have_attribute('aria-expanded','false')
+            ui.locator('.directory-launcher').click();expect(ui.locator('.panel')).to_be_visible()
+            expect(ui.locator('.directory-launcher')).to_have_attribute('aria-expanded','true')
+            ui.locator('.search-input').focus();page.keyboard.press('Escape')
+            expect(ui.locator('.directory-launcher')).to_be_focused()
+        run('Visible directory launcher opens the panel and receives focus on close',directory_launcher)
+        def result_keyboard():
+            reset();ui.locator('.search-input').focus();page.keyboard.press('ArrowDown')
+            expect(rows.nth(0).locator('.message-link')).to_be_focused();page.keyboard.press('ArrowDown')
+            expect(rows.nth(1).locator('.message-link')).to_be_focused();page.keyboard.press('End')
+            expect(rows.last.locator('.message-link')).to_be_focused()
+        run('Arrow keys choose search results before committing a jump',result_keyboard)
+        def reading_return():
+            reset();setting('smoothScroll',False);page.evaluate('document.querySelector("#sample-scroll").scrollTop=1200');scan()
+            before=page.evaluate('document.querySelector("#sample-scroll").scrollTop')
+            rows.last.locator('.message-link').click();expect(ui.locator('.return-reading')).to_be_enabled(timeout=6000)
+            ui.locator('.return-reading').click();expect(ui.locator('.toast')).to_contain_text('已返回刚才的阅读位置',timeout=6000)
+            after=page.evaluate('document.querySelector("#sample-scroll").scrollTop');assert abs(after-before)<=3,(before,after)
+            assert not any('reading' in k for k in page.evaluate('chrome.storage.local.get(null)'))
+            rows.last.locator('.message-link').click();expect(ui.locator('.return-reading')).to_be_enabled(timeout=6000)
+            reset(thread='return-new-route');expect(ui.locator('.return-reading')).to_be_disabled()
+        run('Return restores the reading offset, stays in memory and resets on route changes',reading_return)
+        def reply_outline():
+            reset(n=1);setting('includeAssistant',True);setting('smoothScroll',False)
+            page.evaluate("""()=>{const c=document.querySelector('.assistant .content'),space=document.createElement('div'),h=document.createElement('h2'),tail=document.createElement('div'),hidden=document.createElement('h2');space.style.height='1000px';h.id='chapter-target';h.textContent='安装与验证步骤';tail.style.height='900px';hidden.hidden=true;hidden.textContent='不可见的标题';c.append(space,h,tail,hidden);}""")
+            scan();reply=rows.nth(1);reply.locator('.outline-toggle').click();expect(reply.locator('.heading-link')).to_have_count(2)
+            reply.locator('.heading-link').last.click();expect(ui.locator('.toast')).to_contain_text('已定位章节：安装与验证步骤',timeout=6000)
+            y=page.locator('#chapter-target').bounding_box()['y'];assert abs(y-173)<=4,y
+            expect(ui.locator('.return-reading')).to_be_enabled()
+            page.evaluate("document.querySelector('#chapter-target').textContent='安装与验证步骤（已更新）'")
+            expect(rows.nth(1).locator('.heading-link').last).to_have_text('安装与验证步骤（已更新）')
+        run('Reply outline excludes hidden headings, navigates inside long answers and follows streaming edits',reply_outline)
+        def dense_choices():
+            reset(n=300);ui.locator('[data-action=close]').click();b=ui.locator('.widget').bounding_box();before=page.evaluate('document.querySelector("#sample-scroll").scrollTop')
+            page.mouse.click(b['x']+12,b['y']+16);expect(ui.locator('.nearby-bar')).to_be_visible();count(10)
+            assert page.evaluate('document.querySelector("#sample-scroll").scrollTop')==before
+            assert status()['navigation']['stage']=='idle'
+            ui.locator('[data-action=nearby-next]').click();count(10)
+            assert rows.first.locator('.message-link').get_attribute('data-key')==ui.locator('.marker').nth(10).get_attribute('data-key')
+            ui.locator('.search-input').fill('新版');expect(ui.locator('.nearby-bar')).to_be_hidden();assert rows.count()>10
+        run('Dense pointer clicks reveal paged exact choices without moving the chat; search exits nearby scope',dense_choices)
+        def export_filtered():
+            reset(n=2);setting('includeAssistant',True)
+            page.evaluate("""()=>{const c=document.querySelector('.assistant .content'),h=document.createElement('h2'),pre=document.createElement('pre'),code=document.createElement('code'),table=document.createElement('table'),a=document.createElement('a');h.textContent='导出专用标题';code.className='language-js';code.textContent='const fence = "```";\\nconsole.log(fence);';pre.append(code);for(const values of [['名称','数值'],['基线','42']]){const row=table.insertRow();for(const value of values)row.insertCell().textContent=value;}a.href='javascript:window.pwned=3';a.textContent='不安全链接';c.append(h,pre,table,a);}""")
+            scan();ui.locator('.search-input').fill('导出专用标题');count(1)
+            with page.expect_download() as pending:ui.locator('[data-action=export-markdown]').click()
+            download=pending.value;text=Path(download.path()).read_text(encoding='utf-8')
+            assert download.suggested_filename.endswith('.md') and '搜索结果，1 条已加载消息' in text
+            assert '## 回复 1' in text and '## 提问' not in text and '## 回复 2' not in text
+            assert '````js\nconst fence = "```";\nconsole.log(fence);\n````' in text,text
+            assert '| 名称 | 数值 |' in text and '| 基线 | 42 |' in text
+            assert '重新生成' not in text and 'javascript:' not in text
+            assert '导出专用标题' not in json.dumps(page.evaluate('chrome.storage.local.get(null)'),ensure_ascii=False)
+        run('Markdown export downloads only filtered messages, preserves code fences and tables, strips unsafe links and never persists text',export_filtered)
+        def export_unmounted():
+            page.locator('.sample-turn.assistant').first.evaluate('(node)=>node.remove()');scan();count(1)
+            with page.expect_download() as pending:ui.locator('[data-action=export-markdown]').click()
+            text=Path(pending.value.path()).read_text(encoding='utf-8')
+            assert '纯文本缓存' in text and '导出专用标题' in text
+        run('Export of an observed unmounted message explicitly labels plain-text fallback',export_unmounted)
         def nested_scroll():
             reset();ui.locator('.message-link').nth(5).click();page.wait_for_timeout(80)
             assert page.evaluate('document.querySelector("#sample-scroll").scrollTop')>500 and page.evaluate('window.scrollY')==0
@@ -213,22 +279,24 @@ def main():
         def palette():
             reset();node=ui.locator('.marker').nth(1)
             a=node.evaluate("e=>{const c=getComputedStyle(e,'::after');return [c.width,c.height,c.backgroundColor,c.borderRadius]}")
-            assert a==['12px','12px','rgb(209, 213, 219)','50%'],a
+            assert a==['12px','12px','rgb(181, 200, 194)','50%'],a
             page.wait_for_timeout(200)
             active=ui.locator('.marker.active').evaluate("e=>getComputedStyle(e,'::after').boxShadow")
-            assert 'rgb(16, 163, 127)' in active and '3px' in active,active
+            assert 'rgb(45, 91, 99)' in active and '3px' in active,active
             page.evaluate("document.documentElement.dataset.theme='dark'")
             expect(ui).to_have_attribute('data-theme','dark')
-            assert node.evaluate("e=>getComputedStyle(e,'::after').backgroundColor")=='rgb(85, 85, 85)'
+            page.wait_for_timeout(250)
+            assert node.evaluate("e=>getComputedStyle(e,'::after').backgroundColor")=='rgb(96, 124, 123)'
             page.wait_for_timeout(200)
-            assert 'rgb(25, 195, 125)' in ui.locator('.marker.active').evaluate("e=>getComputedStyle(e,'::after').boxShadow")
-        run('Original UI: 12px gray dots and exact light/dark green active rings',palette)
+            assert 'rgb(169, 216, 204)' in ui.locator('.marker.active').evaluate("e=>getComputedStyle(e,'::after').boxShadow")
+        run('Soft Utility: circular markers and distinct light/dark teal active rings',palette)
         def amber():
             reset();ui.locator('.marker').nth(1).click(button='right')
             expect(ui.locator('.marker').nth(1)).to_have_class(re.compile('starred'))
-            assert ui.locator('.marker').nth(1).evaluate("e=>getComputedStyle(e,'::after').backgroundColor")=='rgb(245, 158, 11)'
+            page.wait_for_timeout(250)
+            assert ui.locator('.marker').nth(1).evaluate("e=>getComputedStyle(e,'::after').backgroundColor")=='rgb(133, 87, 27)'
             expect(ui.locator('.toast')).to_be_hidden()
-        run('Original UI: amber dot fill, no extra star badge or success toast',amber)
+        run('Soft Utility: warm bookmark marker with quiet right-click feedback',amber)
         def tooltip_contract():
             reset(n=2);page.evaluate("document.querySelector('[data-user-message-bubble]').textContent='这是一条用来测试三行截断的长消息，含有中文、emoji🙂和 English words。'.repeat(20)")
             scan();ui.locator('[data-action=close]').click();ui.locator('.marker').first.hover();tip=ui.locator('.tooltip');expect(tip).to_be_visible()
@@ -236,8 +304,8 @@ def main():
             assert tip.inner_text().endswith('…'),tip.inner_text()
             b=tip.bounding_box();assert b['height']<=76 and b['width']==280,b
             c=tip.evaluate("e=>{const s=getComputedStyle(e);return [s.fontSize,s.lineHeight,s.borderRadius,s.paddingTop,s.paddingLeft]}")
-            assert c==['12px','18px','12px','10px','12px'],c
-        run('Original UI: plain-text 3-line tooltip, 12px type, no header/footer',tooltip_contract)
+            assert c==['12px','18px','16px','10px','12px'],c
+        run('Soft Utility: plain-text three-line preview with a 16px corner radius',tooltip_contract)
         def fixed_density():
             reset(n=400);values=ui.locator('.marker').evaluate_all("a=>a.map(e=>parseFloat(e.style.top))")
             assert len(values)==400 and abs(values[0]-16)<.01 and abs(values[-1]-884)<.01
@@ -292,13 +360,21 @@ def main():
         # Popup tests use their own explicit API double.
         pop=context.new_page();pop.on('pageerror',lambda e:errors.append(str(e)))
         icon=base64.b64encode((ROOT/'icons/icon48.png').read_bytes()).decode()
-        pop.set_content(html('popup/popup.html').replace('../icons/icon48.png','data:image/png;base64,'+icon));pop.add_style_tag(content=read('popup/popup.css'))
-        for f in ['tests/browser-mock.js','src/core.js']:pop.add_script_tag(content=read(f))
+        pop.set_content(html('popup/popup.html').replace('../icons/icon48.png','data:image/png;base64,'+icon));pop.add_style_tag(content=read('src/theme.css'));pop.add_style_tag(content=read('popup/popup.css'))
+        for f in ['tests/browser-mock.js','src/i18n.js','popup/i18n.js','src/core.js']:pop.add_script_tag(content=read(f))
         pop.evaluate("GTNTest.popupStatus={ok:true,version:'1.4.2',enabled:true,users:8,assistants:8,adapter:'Chat/Work',diagnostics:{users:8,assistants:8}}")
         pop.add_script_tag(content=read('popup/popup.js'))
         def popup_settings():
             expect(pop.locator('#role-count')).to_contain_text('8 条提问');pop.locator('#theme').select_option('dark');assert pop.evaluate('chrome.storage.local.get(null)')['gtn:setting:theme']=='dark'
         run('Popup status and individual settings keys (MOCK API)',popup_settings)
+        def popup_platforms():
+            for platform,label in [('gemini','Gemini'),('chatgpt','ChatGPT')]:
+                pop.evaluate('([platform,label])=>Object.assign(GTNTest.popupStatus,{platform,platformName:label})',[platform,label])
+                pop.locator('#rescan-main').click();expect(pop.locator('#status-title')).to_have_text(label+' 对话已就绪')
+                box=pop.locator('#showPreview').bounding_box();main=pop.locator('main').bounding_box()
+                assert box['y']+box['height']<=main['y']+main['height'],(box,main)
+            pop.evaluate('delete GTNTest.popupStatus.platform;delete GTNTest.popupStatus.platformName')
+        run('Popup shows the actual ChatGPT or Gemini platform and keeps common settings visible',popup_platforms)
         def popup_selectors():
             pop.locator('#tab-advanced').click();pop.locator('#diagnostic-details summary').click();pop.locator('#customUserSelector').fill('[');pop.locator('#save-selectors').click();expect(pop.locator('#notice')).to_contain_text('语法无效')
             assert 'gtn:setting:customUserSelector' not in pop.evaluate('chrome.storage.local.get(null)')

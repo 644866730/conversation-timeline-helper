@@ -25,7 +25,9 @@ FIXTURE=r'''(() => {
   if(f.modern){delete n.dataset.messageAuthorRole;n.dataset.contentSearchUnitKey='turn-'+Math.floor(i/2)+':'+i%2+':'+(i%2?'assistant':'user');n.dataset.chatgptSelectionMessageId='m-'+i;}
   const small=document.createElement('small');small.textContent=(i%2?'GPT 回复':'YOU 提问')+' · 消息 '+i;
   const p=document.createElement('p');p.textContent='测试消息 '+i+'。这条消息在原网页中重新挂载；不是缓存阅读弹窗。时间轴顶部最旧，底部最新，点击才自动换页。';
-  n.append(small,p);return n;
+  n.append(small,p);
+  if(f.chapter&&i===25){const h=document.createElement('h2');h.id='restored-chapter';h.textContent='旧回复中的目标章节';h.style.margin='0';h.style.fontSize='14px';n.append(h);}
+  return n;
  }
  function range(a,b){const frag=document.createDocumentFragment();for(let i=a;i<=b;i++){
   if(i===f.missing)continue;
@@ -69,7 +71,7 @@ class Harness:
   if modern:self.page.evaluate('NF.modern=true;NF.all()')
   self.cdp=context.new_cdp_session(self.page);frame=self.cdp.send('Page.getFrameTree')['frameTree']['frame']['id']
   self.world=self.cdp.send('Page.createIsolatedWorld',{'frameId':frame,'worldName':'gtn-real-isolated-test'})['executionContextId']
-  for f in ['tests/browser-mock.js','src/core.js','src/loaded-index.js','src/adapter.js','src/navigation-core.js','src/navigation.js','src/preview-guard.js','src/styles.js']:
+  for f in ['tests/browser-mock.js','src/i18n.js','src/core.js','src/loaded-index.js','src/adapter.js','src/navigation-core.js','src/navigation.js','src/preview-guard.js','src/styles.js']:
    source=read(f)
    if limit and f=='src/navigation-core.js':source=source.replace('timeout: 60000',f'timeout: {limit}').replace('stalled: 8000',f'stalled: {limit}')
    self.ev(source)
@@ -108,7 +110,7 @@ def main():
  ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--group',default='all');ap.add_argument('--chromium',default=shutil.which('chromium'));ap.add_argument('--match',default='');args=ap.parse_args()
  OUT.mkdir(parents=True,exist_ok=True);results=[]
  with sync_playwright() as pw:
-  browser=pw.chromium.launch(executable_path=args.chromium,headless=True,args=['--no-sandbox']);context=browser.new_context(viewport={'width':1400,'height':900},reduced_motion='reduce');expect.set_options(timeout=4000)
+  browser=pw.chromium.launch(executable_path=args.chromium,headless=True,args=['--no-sandbox']);context=browser.new_context(viewport={'width':1400,'height':900},reduced_motion='reduce',locale='zh-CN');expect.set_options(timeout=4000)
   def run(group,name,fn,**kwargs):
    if args.group not in ['all',group] or (args.match and not re.search(args.match,name)):return
    h=None;t=time.perf_counter();print('START',name,flush=True)
@@ -116,7 +118,7 @@ def main():
    except Exception as e:
     result={'name':name,'status':'failed','error':str(e)};traceback.print_exc();print('FAIL',name,str(e),flush=True)
     if h and not h.page.is_closed():h.page.screenshot(path=str(OUT/f'failure-navigation-{len(results)}.png'));h.page.close()
-   result['seconds']=round(time.perf_counter()-t,2);results.append(result);(OUT/f'navigation-{args.group}-partial.json').write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+   result['seconds']=round(time.perf_counter()-t,2);results.append(result);(OUT/f'navigation-{args.group}-partial.json').write_text(json.dumps(results,ensure_ascii=False,indent=2)+'\n')
   def idle(h):
    a=h.page.evaluate('NF.scrollCalls');h.page.wait_for_timeout(1200);assert h.page.evaluate('NF.scrollCalls')==a;assert h.page.evaluate('NF.nativeCalls.length')==0;assert h.status()['navigation']['stage']=='idle'
   run('navigation','Idle observation never navigates, paginates or calls the helper',idle,bridge=True)
@@ -151,6 +153,19 @@ def main():
   run('native','Current stable keys override stale ordinal/index after a prepend',shifted,bridge=True)
   def native_pair(h):h.page.evaluate('NF.attachNative()');h.click(27);h.verified(27);assert h.page.evaluate('NF.nativeCalls')==[13]
   run('native','Native compound turn seek lands on assistant within the correct shared turn',native_pair,modern=True,bridge=True)
+  def chapter_navigation(h,missing=False):
+   h.page.evaluate('NF.chapter=true;NF.all()');h.scan();h.ev("GTNTest.send('GTN_OPEN')")
+   h.ui.locator('.outline-toggle').click();expect(h.ui.locator('.heading-link')).to_have_count(1)
+   h.page.evaluate('NF.showPage(9);NF.auto=true;NF.attachNative()');h.page.wait_for_timeout(450);h.scan()
+   assert h.page.locator('#restored-chapter').count()==0
+   if missing:h.page.evaluate('NF.chapter=false')
+   h.ui.locator('.heading-link').click()
+   expect(h.ui.locator('.toast')).to_contain_text('章节已变化' if missing else '已定位章节：旧回复中的目标章节',timeout=10000)
+   h.verified(25)
+   if not missing:
+    y=h.page.locator('#restored-chapter').bounding_box()['y'];assert abs(y-90)<=4,y
+  run('native','Chapter navigation restores an unmounted reply across isolated worlds and aligns the live heading',chapter_navigation,bridge=True)
+  run('native','A changed chapter reports message-level fallback instead of claiming a false heading jump',lambda h:chapter_navigation(h,True),bridge=True)
   def wrong(h):h.page.evaluate('NF.wrongNative=true;NF.attachNative()');h.click(93);h.verified(93);assert h.page.evaluate('NF.nativeCalls.length')==1;assert h.page.evaluate('NF.transitions.length')>=2
   run('native','Misleading helper acknowledgement cannot fake success; directional fallback recovers exact ID',wrong,bridge=True)
   def no_privilege(h):
@@ -182,5 +197,5 @@ def main():
    assert h.ui.locator('[role=slider],.timeline-left-slider').count()==0
   run('navigation','Native pagination leaves fixed oldest/newest endpoints and zero rail scroll range',density)
   output={'mode':'Chromium real isolated/MAIN worlds, LOCAL DOM fixtures, MOCK Chrome APIs; not a live account','group':args.group,'browser':browser.version,'executedAt':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'passed':sum(x['status']=='passed'for x in results),'failed':sum(x['status']=='failed'for x in results),'tests':results}
-  (OUT/f'navigation-{args.group}-results.json').write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('RESULT',output['passed'],'passed,',output['failed'],'failed',flush=True);browser.close();return int(output['failed']>0)
+  (OUT/f'navigation-{args.group}-results.json').write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n');print('RESULT',output['passed'],'passed,',output['failed'],'failed',flush=True);browser.close();return int(output['failed']>0)
 if __name__=='__main__':raise SystemExit(main())

@@ -38,12 +38,12 @@ def main():
     OUT.mkdir(parents=True,exist_ok=True);results=[];errors=[]
     with sync_playwright() as p:
         browser=p.chromium.launch(executable_path=args.chromium,headless=True,args=['--no-sandbox'])
-        context=browser.new_context(viewport={'width':1400,'height':900},reduced_motion='reduce')
+        context=browser.new_context(viewport={'width':1400,'height':900},reduced_motion='reduce',locale='zh-CN')
         page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)));page.set_content(HTML);page.add_style_tag(content=CSS)
         page.add_script_tag(content=FIXTURE);page.add_script_tag(content=read('tests/browser-mock.js'))
         page.evaluate("chrome.storage.local.set({'gtn:setting:autoLoadHistory':true,'gtn:setting:scrollFallback':true})")
         page.evaluate('''()=>{globalThis.networkCalls=0;globalThis.scrollCalls=0;globalThis.fetch=()=>{networkCalls++;throw Error('Network must not be used');};const native=Element.prototype.scrollTo;Element.prototype.scrollTo=function(...args){scrollCalls++;return native.apply(this,args);};const win=window.scrollTo;window.scrollTo=(...args)=>{scrollCalls++;return win(...args);};globalThis.__testLocation={href:'https://chatgpt.com/c/passive'};}''')
-        for f in ['src/core.js','src/loaded-index.js','src/adapter.js','src/navigation-core.js','src/navigation.js','src/preview-guard.js','src/styles.js']:page.add_script_tag(content=read(f))
+        for f in ['src/i18n.js','src/core.js','src/loaded-index.js','src/adapter.js','src/navigation-core.js','src/navigation.js','src/preview-guard.js','src/styles.js']:page.add_script_tag(content=read(f))
         source='((location)=>{'+read('src/content.js')+'})(globalThis.__testLocation);';page.add_script_tag(content=source)
         host=page.locator('#gpt-timeline-next-root');nodes=host.locator('.marker');expect.set_options(timeout=3500)
         def send(kind='GTN_STATUS'):return page.evaluate('(t)=>GTNTest.send(t)',kind)
@@ -157,8 +157,8 @@ def main():
         # Settings use the same local mocked status as the running controller.
         pop=context.new_page();pop.on('pageerror',lambda e:errors.append(str(e)))
         icon=base64.b64encode((ROOT/'icons/icon48.png').read_bytes()).decode()
-        pop.set_viewport_size({'width':400,'height':592});pop.set_content(clean_html('popup/popup.html').replace('../icons/icon48.png','data:image/png;base64,'+icon));pop.add_style_tag(content=read('popup/popup.css'))
-        for f in ['tests/browser-mock.js','src/core.js']:pop.add_script_tag(content=read(f))
+        pop.set_viewport_size({'width':400,'height':592});pop.set_content(clean_html('popup/popup.html').replace('../icons/icon48.png','data:image/png;base64,'+icon));pop.add_style_tag(content=read('src/theme.css'));pop.add_style_tag(content=read('popup/popup.css'))
+        for f in ['tests/browser-mock.js','src/i18n.js','popup/i18n.js','src/core.js']:pop.add_script_tag(content=read(f))
         pop.evaluate('(s)=>GTNTest.popupStatus=s',send());pop.add_script_tag(content=read('popup/popup.js'))
         def clean_settings():
             expect(pop.locator('#coverage')).to_have_text('随页更新')
@@ -181,6 +181,6 @@ def main():
         def errors_check():assert not errors,errors;assert page.evaluate('networkCalls')==0
         run('No uncaught errors or network requests during the complete passive regression',errors_check)
         result={'mode':'Local Chromium DOM simulation; mocked chrome APIs; no live ChatGPT account', 'browser':browser.version,'executedAt':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'passed':sum(r['status']=='passed'for r in results),'failed':sum(r['status']=='failed'for r in results),'pageErrors':errors,'tests':results}
-        (OUT/'loaded-browser-results.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+        (OUT/'loaded-browser-results.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
         print('RESULT',result['passed'],'passed,',result['failed'],'failed',flush=True);browser.close();return int(result['failed']>0)
 if __name__=='__main__':raise SystemExit(main())

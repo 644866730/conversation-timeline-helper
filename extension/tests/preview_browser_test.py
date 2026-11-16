@@ -34,12 +34,12 @@ FIXTURE=r'''(() => {
  f.root.scrollTop=document.querySelector('[data-message-id="m-80"]').getBoundingClientRect().top-f.root.getBoundingClientRect().top+f.root.scrollTop-170;
 })();'''
 def main():
- ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--baseline',type=Path);ap.add_argument('--match',default='');args=ap.parse_args();baseline=args.baseline is not None
+ ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--baseline',type=Path);ap.add_argument('--match',default='');ap.add_argument('--chromium',default=shutil.which('chromium'));args=ap.parse_args();baseline=args.baseline is not None
  if baseline:
-  oldread=nb.read;nb.read=lambda f:(args.baseline/f).read_text(encoding='utf-8') if (args.baseline/f).exists() else ('' if f=='src/preview-guard.js' else oldread(f))
+  oldread=nb.read;nb.read=lambda f:(args.baseline/f).read_text() if (args.baseline/f).exists() else ('' if f=='src/preview-guard.js' else oldread(f))
  results=[];out=ROOT/'tests/results';out.mkdir(exist_ok=True)
  with sync_playwright() as pw:
-  browser=pw.chromium.launch(executable_path=shutil.which('chromium'),headless=True,args=['--no-sandbox']);context=browser.new_context(viewport={'width':1400,'height':900},reduced_motion='reduce');expect.set_options(timeout=4000)
+  browser=pw.chromium.launch(executable_path=args.chromium,headless=True,args=['--no-sandbox']);context=browser.new_context(viewport={'width':1400,'height':900},reduced_motion='reduce',locale='zh-CN');expect.set_options(timeout=4000)
   def prepare():
    h=nb.Harness(context,bridge=True);h.page.add_script_tag(content=FIXTURE);h.page.wait_for_timeout(350);h.scan();return h
   def top(h):return h.page.evaluate('PF.root.scrollTop')
@@ -148,6 +148,6 @@ def main():
     h.page.evaluate("NF.reverse=true;NF.virtual()");h.page.wait_for_timeout(220);h.page.evaluate("const b=document.createElement('button');b.id='open-image';b.textContent='preview';b.onclick=()=>PF.open();document.querySelector('[data-message-id=\"m-118\"]').append(b)")
     h.page.wait_for_timeout(250);h.scan();before=top(h);show(h,overlap=False);h.page.evaluate('PF.root.scrollTop=-5000');h.page.wait_for_timeout(160);click_close(h);same(h,before)
    run('Column reverse negative scroll frame is restored after preview',reverse_root)
-  report={'mode':'LOCAL Chromium fixtures; real isolated worlds; mocked Chrome APIs; not a live account','version':'1.4.1 baseline' if baseline else '1.4.2','browser':browser.version,'passed':sum(t['status']=='passed' for t in results),'failed':sum(t['status']=='failed' for t in results),'tests':results}
-  (out/('preview-baseline-results.json' if baseline else 'preview-results.json')).write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('RESULT',report['passed'],'passed',report['failed'],'failed',flush=True);browser.close();return int(report['failed']>0)
+  report={'mode':'LOCAL Chromium fixtures; real isolated worlds; mocked Chrome APIs; not a live account','version':'1.4.1 baseline' if baseline else json.loads((ROOT/'manifest.json').read_text(encoding='utf-8'))['version'],'browser':browser.version,'passed':sum(t['status']=='passed' for t in results),'failed':sum(t['status']=='failed' for t in results),'tests':results}
+  (out/('preview-baseline-results.json' if baseline else 'preview-results.json')).write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n');print('RESULT',report['passed'],'passed',report['failed'],'failed',flush=True);browser.close();return int(report['failed']>0)
 if __name__=='__main__':raise SystemExit(main())
