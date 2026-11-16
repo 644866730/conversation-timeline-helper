@@ -1,10 +1,10 @@
 <!doctype html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>对话时间轴助手 · 本地模拟页面</title><link rel="stylesheet" href="demo.css"></head><body>
-<header class="demo-bar"><div><span class="eyebrow">CONVERSATION TIMELINE HELPER / LOCAL DEMO</span><h1>一段长对话，一条清晰的路径。</h1></div><div class="controls"><select id="demo-layout" aria-label="模拟消息结构"><option value="modern">Chat / Work</option><option value="legacy">旧版 DOM</option><option value="section">data-turn DOM</option><option value="bubble">气泡兜底</option></select><button id="demo-theme">切换深浅色</button><button id="demo-add">添加一轮</button></div></header>
+<header class="demo-bar"><div><span class="eyebrow">CONVERSATION TIMELINE HELPER / LOCAL DEMO</span><h1>一段长对话，一条清晰的路径。</h1></div><div class="controls"><select id="demo-layout" aria-label="模拟消息结构"><option value="modern">Chat / Work</option><option value="legacy">旧版 DOM</option><option value="section">data-turn DOM</option><option value="bubble">气泡兜底</option></select><button id="demo-theme">切换深浅色</button><button id="demo-long-answer">体验长回复</button><button id="demo-add">添加一轮</button></div></header>
 <div class="demo-notice">这是本地模拟页面，不是真实 ChatGPT 账号截图。仅观察已加载内容；固定时间轴无滑条，不会自动读取历史。</div>
 <div id="sample-scroll"><main id="sample-main"><div class="conversation-heading"><span>CONVERSATION</span><h2>从零设计一个对话时间轴</h2><p>右侧的每一个节点，都能回到一次提问。</p></div><div id="messages"></div><form data-chatgpt-composer><div contenteditable="true" role="textbox" aria-label="模拟输入框">在这里输入不会发送任何信息</div><button type="button">发送（模拟）</button></form></main></div>
 <script src="fixture.js"></script>
 <!-- DEMO-SHIM-BEGIN -->
-<script src="mock-extension.js"></script><script src="../src/core.js"></script><script src="../src/loaded-index.js"></script><script src="../src/adapter.js"></script><script src="../src/navigation-core.js"></script><script src="../src/navigation.js"></script><script src="../src/page-navigation.js"></script>
+<script src="mock-extension.js"></script><script src="../src/i18n.js"></script><script src="../src/core.js"></script><script src="../src/loaded-index.js"></script><script src="../src/adapter.js"></script><script src="../src/navigation-core.js"></script><script src="../src/navigation.js"></script><script src="../src/page-navigation.js"></script>
 <script src="../src/preview-guard.js"></script>
 <script src="../src/styles.js"></script><script src="../src/content.js"></script>
 <!-- DEMO-SHIM-END -->

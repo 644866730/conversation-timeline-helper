@@ -54,6 +54,16 @@
   document.getElementById('demo-layout').addEventListener('change', event => setLayout(event.target.value));
   document.getElementById('demo-theme').addEventListener('click', () => { document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; });
   document.getElementById('demo-add').addEventListener('click', () => appendPair());
+  document.getElementById('demo-long-answer').addEventListener('click', () => {
+    const content = document.querySelector('.assistant .content');
+    if (!content || content.querySelector('[data-long-demo]')) return;
+    const section = node('section'); section.dataset.longDemo = 'true';
+    section.append(node('h2','安装与验证'),node('p','先在浏览器的扩展管理页面重新加载扩展，再刷新 ChatGPT。打开目录，可以展开这条回复中的章节。'));
+    const pre = node('pre'), code = node('code','npm test\npython tools/sync_styles.py'); code.className = 'language-shell'; pre.append(code); section.append(pre);
+    section.append(node('h2','常见问题排查'),node('p','遇到未加载的旧消息，点击目录项会按需恢复原网页内容。跳转完成后可以返回阅读处。'));
+    section.append(node('h3','导出当前列表'),node('p','搜索关键词或只看收藏后，点击目录底部的导出，保存当前列表中的消息。代码块和标题会尽量保留。'));
+    content.append(section);
+  });
   globalThis.GTNFixture = {setLayout, appendPair, message};
   setLayout();
 })();
