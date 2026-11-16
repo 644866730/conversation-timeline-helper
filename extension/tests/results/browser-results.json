@@ -1,7 +1,7 @@
 {
   "mode": "Local DOM simulation; chrome APIs mocked; location injected",
   "browser": "153.0.8010.12",
-  "executedAt": "2026-11-16T13:03:19Z",
+  "executedAt": "2026-11-16T14:01:54Z",
   "passed": 66,
   "failed": 0,
   "notValidated": [
@@ -15,217 +15,217 @@
     {
       "name": "Chat/Work detection and deduplication",
       "status": "passed",
-      "seconds": 0.087
+      "seconds": 0.063
     },
     {
       "name": "Include-assistant preference applies immediately",
       "status": "passed",
-      "seconds": 0.076
+      "seconds": 0.035
     },
     {
       "name": "Legacy role-attribute layout",
       "status": "passed",
-      "seconds": 0.049
+      "seconds": 0.048
     },
     {
       "name": "Section data-turn layout",
       "status": "passed",
-      "seconds": 0.07
+      "seconds": 0.032
     },
     {
       "name": "Non-text assistant turn",
       "status": "passed",
-      "seconds": 0.071
+      "seconds": 0.043
     },
     {
       "name": "Bubble fallback without guessing assistant roles",
       "status": "passed",
-      "seconds": 0.043
+      "seconds": 0.04
     },
     {
       "name": "Overlapping new and old role markers are deduplicated",
       "status": "passed",
-      "seconds": 0.053
+      "seconds": 0.052
     },
     {
       "name": "Compound wrapper gets distinct user and assistant targets",
       "status": "passed",
-      "seconds": 0.099
+      "seconds": 0.057
     },
     {
       "name": "Unknown role fails closed",
       "status": "passed",
-      "seconds": 0.087
+      "seconds": 0.05
     },
     {
       "name": "Hidden branches and composer drafts are excluded",
       "status": "passed",
-      "seconds": 0.048
+      "seconds": 0.069
     },
     {
       "name": "Preview text is not interpreted as HTML; action toolbar excluded",
       "status": "passed",
-      "seconds": 0.045
+      "seconds": 0.078
     },
     {
       "name": "Custom CSS selectors recover unknown layouts",
       "status": "passed",
-      "seconds": 0.055
+      "seconds": 0.054
     },
     {
       "name": "Invalid selector reports an error without disabling built-ins",
       "status": "passed",
-      "seconds": 0.038
+      "seconds": 0.056
     },
     {
       "name": "Streaming updates retain a single native message identity",
       "status": "passed",
-      "seconds": 0.66
+      "seconds": 0.655
     },
     {
       "name": "MutationObserver indexes newly appended turns",
       "status": "passed",
-      "seconds": 0.336
+      "seconds": 0.337
     },
     {
       "name": "Chinese multi-term search, clear and no-result state",
       "status": "passed",
-      "seconds": 0.071
+      "seconds": 0.092
     },
     {
       "name": "Long-reply search shows the literal match in its surrounding context",
       "status": "passed",
-      "seconds": 0.046
+      "seconds": 0.044
     },
     {
       "name": "Visible directory launcher opens the panel and receives focus on close",
       "status": "passed",
-      "seconds": 0.104
+      "seconds": 0.119
     },
     {
       "name": "Arrow keys choose search results before committing a jump",
       "status": "passed",
-      "seconds": 0.033
+      "seconds": 0.036
     },
     {
       "name": "Return restores the reading offset, stays in memory and resets on route changes",
       "status": "passed",
-      "seconds": 2.615
+      "seconds": 2.647
     },
     {
       "name": "Reply outline excludes hidden headings, navigates inside long answers and follows streaming edits",
       "status": "passed",
-      "seconds": 1.287
+      "seconds": 1.303
     },
     {
       "name": "Dense pointer clicks reveal paged exact choices without moving the chat; search exits nearby scope",
       "status": "passed",
-      "seconds": 0.316
+      "seconds": 0.323
     },
     {
       "name": "Markdown export downloads only filtered messages, preserves code fences and tables, strips unsafe links and never persists text",
       "status": "passed",
-      "seconds": 0.307
+      "seconds": 0.304
     },
     {
       "name": "Export of an observed unmounted message explicitly labels plain-text fallback",
       "status": "passed",
-      "seconds": 0.08
+      "seconds": 0.09
     },
     {
       "name": "Nested scroll container navigation",
       "status": "passed",
-      "seconds": 0.162
+      "seconds": 0.156
     },
     {
       "name": "Document-level scroll fallback",
       "status": "passed",
-      "seconds": 0.183
+      "seconds": 0.184
     },
     {
       "name": "Active reading marker and previous-message navigation",
       "status": "passed",
-      "seconds": 0.314
+      "seconds": 0.297
     },
     {
       "name": "Bookmark restore after controller restart (MOCK storage)",
       "status": "passed",
-      "seconds": 0.124
+      "seconds": 0.125
     },
     {
       "name": "Bookmarks isolated by conversation",
       "status": "passed",
-      "seconds": 0.136
+      "seconds": 0.096
     },
     {
       "name": "Star filter responds to adding and removing bookmarks",
       "status": "passed",
-      "seconds": 0.227
+      "seconds": 0.216
     },
     {
       "name": "Storage failure rolls back optimistic state",
       "status": "passed",
-      "seconds": 0.1
+      "seconds": 0.07
     },
     {
       "name": "No stable conversation ID means memory-only bookmarks",
       "status": "passed",
-      "seconds": 0.082
+      "seconds": 0.098
     },
     {
       "name": "URL-before-DOM SPA race suppresses stale old turns",
       "status": "passed",
-      "seconds": 0.046
+      "seconds": 0.04
     },
     {
       "name": "React-style reused nodes detected after identity replacement",
       "status": "passed",
-      "seconds": 0.023
+      "seconds": 0.031
     },
     {
       "name": "400 prompts keep 400 nodes in one fixed viewport with no slider",
       "status": "passed",
-      "seconds": 0.217
+      "seconds": 0.214
     },
     {
       "name": "Toggle shortcut works even with directory search focused",
       "status": "passed",
-      "seconds": 0.304
+      "seconds": 0.339
     },
     {
       "name": "Composer not hijacked and keyboard preference respected",
       "status": "passed",
-      "seconds": 0.14
+      "seconds": 0.13
     },
     {
       "name": "Automatic theme, override, left dock and isolated font",
       "status": "passed",
-      "seconds": 0.042
+      "seconds": 0.044
     },
     {
       "name": "Hover preview and its disable preference",
       "status": "passed",
-      "seconds": 0.085
+      "seconds": 0.09
     },
     {
       "name": "Right-clicking a single rail node toggles its bookmark",
       "status": "passed",
-      "seconds": 0.075
+      "seconds": 0.064
     },
     {
       "name": "Long-press bookmarks without also triggering a jump",
       "status": "passed",
-      "seconds": 1.547
+      "seconds": 1.548
     },
     {
       "name": "Scroll changes do not rebuild directory DOM",
       "status": "passed",
-      "seconds": 0.155
+      "seconds": 0.141
     },
     {
       "name": "Loaded-node retention, detached host and reinjection recovery",
       "status": "passed",
-      "seconds": 0.257
+      "seconds": 0.381
     },
     {
       "name": "Enable/disable preference recovers cleanly",
@@ -235,47 +235,47 @@
     {
       "name": "350px viewport stays within screen bounds",
       "status": "passed",
-      "seconds": 0.049
+      "seconds": 0.054
     },
     {
-      "name": "Original UI: 24px track at top60/right15, no toolbar or count",
+      "name": "Compact rail starts below the lowered launcher and leaves native top actions clear",
       "status": "passed",
       "seconds": 0.089
     },
     {
       "name": "Soft Utility: circular markers and distinct light/dark teal active rings",
       "status": "passed",
-      "seconds": 0.723
+      "seconds": 0.74
     },
     {
       "name": "Soft Utility: warm bookmark marker with quiet right-click feedback",
       "status": "passed",
-      "seconds": 0.338
+      "seconds": 0.337
     },
     {
       "name": "Soft Utility: plain-text three-line preview with a 16px corner radius",
       "status": "passed",
-      "seconds": 0.13
+      "seconds": 0.124
     },
     {
       "name": "Fixed rail pins endpoints and compresses old top nodes more densely",
       "status": "passed",
-      "seconds": 0.216
+      "seconds": 0.186
     },
     {
       "name": "Newest endpoint is directly keyboard-accessible without scrolling the rail",
       "status": "passed",
-      "seconds": 0.911
+      "seconds": 0.881
     },
     {
       "name": "Original UI: wheel on timeline scrolls only the conversation, never the rail",
       "status": "passed",
-      "seconds": 0.582
+      "seconds": 0.596
     },
     {
       "name": "Original UI: long-press progress and >6px movement cancellation",
       "status": "passed",
-      "seconds": 0.745
+      "seconds": 0.78
     },
     {
       "name": "Original UI: empty conversation has no decorative blank rail",
@@ -285,57 +285,57 @@
     {
       "name": "Original UI: single dot starts at 16px track padding",
       "status": "passed",
-      "seconds": 0.031
+      "seconds": 0.023
     },
     {
       "name": "Original UI: data-color-mode dark theme recognition",
       "status": "passed",
-      "seconds": 0.033
+      "seconds": 0.025
     },
     {
       "name": "Original UI: clicking a dot adds no non-upstream message outline",
       "status": "passed",
-      "seconds": 0.071
+      "seconds": 0.058
     },
     {
       "name": "Diagnostic payload contains no conversation text or raw IDs",
       "status": "passed",
-      "seconds": 0.035
+      "seconds": 0.032
     },
     {
       "name": "Destroy removes observers, timers and host",
       "status": "passed",
-      "seconds": 0.796
+      "seconds": 0.794
     },
     {
       "name": "Popup status and individual settings keys (MOCK API)",
       "status": "passed",
-      "seconds": 0.023
+      "seconds": 0.02
     },
     {
       "name": "Popup shows the actual ChatGPT or Gemini platform and keeps common settings visible",
       "status": "passed",
-      "seconds": 0.086
+      "seconds": 0.144
     },
     {
       "name": "Popup selector validation prevents invalid persistence",
       "status": "passed",
-      "seconds": 0.161
+      "seconds": 0.128
     },
     {
       "name": "Popup destructive clear asks confirmation and preserves settings",
       "status": "passed",
-      "seconds": 0.098
+      "seconds": 0.267
     },
     {
       "name": "Popup safe JSON serialization (actual downloads not attempted)",
       "status": "passed",
-      "seconds": 0.095
+      "seconds": 0.096
     },
     {
       "name": "Popup remains configurable when no content script is connected",
       "status": "passed",
-      "seconds": 0.043
+      "seconds": 0.357
     },
     {
       "name": "No uncaught page exceptions",

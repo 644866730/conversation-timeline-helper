@@ -1,0 +1,14 @@
+{
+  "mode": "Offline local DOM fixtures and shared Chrome storage mock; not a native extension install",
+  "browser": "153.0.8010.12",
+  "executedAt": "2026-11-16T14:01:28Z",
+  "passed": 1,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "All eight content languages fit a 350px directory without horizontal overflow",
+      "status": "passed",
+      "seconds": 1.674
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "mode": "Local Chromium DOM simulation; mocked chrome APIs; no live ChatGPT account",
   "browser": "153.0.8010.12",
-  "executedAt": "2026-11-16T13:01:01Z",
+  "executedAt": "2026-11-16T14:00:23Z",
   "passed": 24,
   "failed": 0,
   "pageErrors": [],
@@ -9,37 +9,37 @@
     {
       "name": "Only the 20 initially loaded messages are indexed",
       "status": "passed",
-      "seconds": 0.028
+      "seconds": 0.041
     },
     {
       "name": "Legacy auto-load=true cannot trigger network requests or automatic scrolling",
       "status": "passed",
-      "seconds": 1.813
+      "seconds": 1.83
     },
     {
       "name": "Manual older-page loading prepends messages to the top in order",
       "status": "passed",
-      "seconds": 0.328
+      "seconds": 0.347
     },
     {
       "name": "New messages append at the bottom without changing rail height",
       "status": "passed",
-      "seconds": 0.352
+      "seconds": 0.325
     },
     {
       "name": "Repeated prepend and append maintain exact chronological order",
       "status": "passed",
-      "seconds": 0.836
+      "seconds": 0.816
     },
     {
       "name": "Virtualized unmount keeps all 81 observed nodes; mounted count drops to six",
       "status": "passed",
-      "seconds": 0.474
+      "seconds": 0.478
     },
     {
       "name": "Unmounted-node click starts cancellable page navigation, never opens cached正文",
       "status": "passed",
-      "seconds": 0.079
+      "seconds": 0.048
     },
     {
       "name": "Previously seen old messages remount without duplicate nodes",
@@ -49,22 +49,22 @@
     {
       "name": "Scrolling and virtualization do not move chronological rail coordinates",
       "status": "passed",
-      "seconds": 0.918
+      "seconds": 0.935
     },
     {
       "name": "Search uses cached messages but never replaces the fixed rail endpoints",
       "status": "passed",
-      "seconds": 0.096
+      "seconds": 0.094
     },
     {
       "name": "A temporarily empty mounted viewport cannot erase observed history",
       "status": "passed",
-      "seconds": 0.465
+      "seconds": 0.469
     },
     {
       "name": "Explicit index rebuild scans only currently mounted messages",
       "status": "passed",
-      "seconds": 0.01
+      "seconds": 0.014
     },
     {
       "name": "Route change clears old cached history and suppresses old DOM during transition",
@@ -74,52 +74,52 @@
     {
       "name": "200 dots occupy the same fixed rail with a denser older-message region",
       "status": "passed",
-      "seconds": 0.041
+      "seconds": 0.055
     },
     {
       "name": "Rail has no scroll range even when scrollTop is assigned programmatically",
       "status": "passed",
-      "seconds": 0.011
+      "seconds": 0.013
     },
     {
       "name": "Pointer hover resolves the nearest dense node rather than an overlapping hit box",
       "status": "passed",
-      "seconds": 0.222
+      "seconds": 0.208
     },
     {
       "name": "Every dense node remains individually accessible with arrows/Home/End",
       "status": "passed",
-      "seconds": 0.017
+      "seconds": 0.02
     },
     {
       "name": "Latest streamed body remains searchable after unmount without a cached-message modal",
       "status": "passed",
-      "seconds": 0.981
+      "seconds": 1.003
     },
     {
       "name": "Window resize keeps first/last nodes pinned to the new fixed-height rail",
       "status": "passed",
-      "seconds": 0.097
+      "seconds": 0.063
     },
     {
       "name": "Diagnostics/storage do not persist conversation bodies or raw IDs",
       "status": "passed",
-      "seconds": 0.01
+      "seconds": 0.003
     },
     {
       "name": "Streaming match beyond preview length updates search without shifting rail endpoints",
       "status": "passed",
-      "seconds": 0.544
+      "seconds": 0.531
     },
     {
       "name": "Settings remove every automatic-history control and retain 400px layout",
       "status": "passed",
-      "seconds": 0.043
+      "seconds": 0.059
     },
     {
       "name": "Advanced settings provide manual local rebuild, never a scroll-to-load action",
       "status": "passed",
-      "seconds": 0.133
+      "seconds": 0.14
     },
     {
       "name": "No uncaught errors or network requests during the complete passive regression",
