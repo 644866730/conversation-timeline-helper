@@ -4,16 +4,16 @@
 
 ## 报告问题
 
-请在 Issues 中说明 Chrome 版本、扩展版本、操作步骤、预期结果与实际结果。优先使用没有私人信息的测试对话。附上诊断或截图前，请移除聊天正文、账号标识、Cookie、密码和令牌；安全问题请按 [SECURITY.md](SECURITY.md) 私下报告。
+请在 Issues 中说明 Edge 或 Chrome 版本、扩展版本、ChatGPT 或 Gemini、操作步骤、预期结果与实际结果。优先使用没有私人信息的测试对话。附上诊断或截图前，请移除聊天正文、账号标识、Cookie、密码和令牌；安全问题请按 [SECURITY.md](SECURITY.md) 私下报告。
 
 ## 修改代码
 
 1. Fork 仓库，从当前 `main` 创建分支。
-2. 扩展源码位于 `extension/`；根目录的三个 HTML 页面由 GitHub Pages 提供。
+2. 扩展源码位于 `extension/`；根目录的中英文产品、隐私与支持 HTML 页面由 GitHub Pages 提供。
 3. 保持修改聚焦，说明具体触发场景和行为变化。
-4. 在 `extension/` 执行 `npm test`。样式应修改 `src/shell.css` 或 `src/extras.css`，再执行 `npm run styles`；不要直接修改生成的 `src/timeline.css` / `src/styles.js`。
+4. 在 `extension/` 执行 `npm test`。共享主题维护在 `src/theme.css`，时间轴规则修改 `src/shell.css` 或 `src/extras.css`，再执行 `npm run styles`；不要只修改生成的 `src/timeline.css` / `src/styles.js`。
 5. 涉及消息识别、滚动、预览或导航时，运行相关浏览器场景，并在真实测试对话中验收。请区分模拟结果与真实账户结果。
-6. 在 PR 中注明验证命令、结果、已知限制；行为、权限或数据处理变化应同步更新隐私说明和相应文档。
+6. 在 PR 中注明验证命令、结果、已知限制；行为、权限或数据处理变化应同步更新网站中英文隐私政策、扩展内置隐私说明和相应文档。新增界面文案需要维护离线字典及各语言占位符。
 
 测试与打包的准备命令见 [README.md](README.md)。不要提交环境文件、私钥、访问令牌、真实聊天、收藏备份、个人诊断或本地构建产物。
 

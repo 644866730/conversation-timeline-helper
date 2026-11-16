@@ -24,3 +24,8 @@ output/
 outputs/
 tests/results/failure-*.png
 tests/results/preview-failure-*.png
+
+# Local browser failure screenshots are never release assets.
+**/tests/results/failure-*.png
+**/tests/results/preview-failure-*.png
+**/tests/results/i18n-failure-*.png
