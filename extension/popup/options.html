@@ -1,51 +1,53 @@
 <!doctype html>
 <html lang="zh-CN" data-view="page">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>对话时间轴助手 · 设置</title><link rel="stylesheet" href="popup.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title data-i18n="对话时间轴助手 · 设置">对话时间轴助手 · 设置</title><link rel="stylesheet" href="../src/theme.css"><link rel="stylesheet" href="popup.css"></head>
 <body>
   <header class="header">
     <img src="../icons/icon48.png" width="36" height="36" alt="">
-    <div class="brand"><h1>对话时间轴助手 <span id="version" class="version"></span></h1><p>CONVERSATION TIMELINE HELPER</p></div>
-    <label class="switch master" title="启用时间轴"><input type="checkbox" id="enabled" aria-label="启用时间轴"><span></span></label>
+    <div class="brand"><h1><span data-i18n="对话时间轴助手">对话时间轴助手</span><span id="version" class="version"></span></h1><p data-i18n="让长对话，更好找。">让长对话，更好找。</p></div>
+    <label class="switch master" title="启用时间轴" data-i18n-title="启用时间轴"><input type="checkbox" id="enabled" aria-label="启用时间轴" data-i18n-aria="启用时间轴"><span></span></label>
   </header>
-  <nav class="tabs" aria-label="设置分类" role="tablist">
-    <button id="tab-general" role="tab" aria-controls="general" aria-selected="true" type="button">常用设置</button>
-    <button id="tab-advanced" role="tab" aria-controls="advanced" aria-selected="false" tabindex="-1" type="button">高级与数据</button>
+  <nav class="tabs" aria-label="设置分类" data-i18n-aria="设置分类" role="tablist">
+    <button id="tab-general" role="tab" aria-controls="general" aria-selected="true" type="button" data-i18n="常用设置">常用设置</button>
+    <button id="tab-advanced" role="tab" aria-controls="advanced" aria-selected="false" tabindex="-1" type="button" data-i18n="高级与数据">高级与数据</button>
     <span class="saved" id="saved-state" role="status">更改自动保存</span>
   </nav>
   <main>
     <section id="general" role="tabpanel" aria-labelledby="tab-general">
       <section class="status-card" aria-live="polite">
         <div class="status-heading"><div class="status-label"><span id="status-dot"></span><strong id="status-title">正在连接页面</strong></div><span id="coverage" class="badge">连接中</span></div>
-        <div class="metrics"><div><span class="total" id="total-count">—</span><span class="metric-unit">条消息</span></div><div class="metric-detail"><span id="role-count">等待当前对话</span><span id="mounted-count">本页已加载索引</span></div></div>
+        <div class="metrics"><div><span class="total" id="total-count">—</span><span class="metric-unit" data-i18n="条消息">条消息</span></div><div class="metric-detail"><span id="role-count">等待当前对话</span><span id="mounted-count">本页已加载索引</span></div></div>
         <p id="status-detail">只记录你实际加载过的消息，不自动补全历史。</p>
-        <div class="status-actions"><button id="open-directory" type="button" class="primary"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>搜索已加载消息</button><button id="rescan-main" type="button" class="secondary">重新识别</button></div>
+        <div class="status-actions"><button id="open-directory" type="button" class="primary"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span data-i18n="搜索已加载消息">搜索已加载消息</span></button><button id="rescan-main" type="button" class="secondary" data-i18n="重新识别">重新识别</button></div>
       </section>
-      <div class="mode-note"><span>顶部最旧，底部最新；随页面加载更新。<br>固定高度、无滑条；旧消息越多，上方节点越密。</span></div>
-      <div class="section-title reading-title">阅读设置</div>
-      <label class="setting-row"><span>显示范围</span><select id="includeAssistant"><option value="true">提问与回复</option><option value="false">只看我的提问</option></select></label>
-      <label class="setting-row"><span>外观主题</span><select id="theme"><option value="auto">跟随 ChatGPT</option><option value="light">浅色</option><option value="dark">深色</option></select></label>
-      <label class="setting-row"><span>时间轴位置</span><select id="side"><option value="right">页面右侧</option><option value="left">页面左侧</option></select></label>
-      <div class="setting-row last"><label for="showPreview">悬停消息预览</label><label class="switch"><input id="showPreview" type="checkbox" aria-label="悬停消息预览"><span></span></label></div>
+      <div class="section-title reading-title" data-i18n="阅读设置">阅读设置</div>
+      <div class="settings-group">
+        <label class="setting-row language-row"><span data-i18n="界面语言">界面语言</span><select id="language" aria-label="界面语言" data-i18n-aria="界面语言"><option value="auto">跟随浏览器</option></select></label>
+        <label class="setting-row"><span data-i18n="显示范围">显示范围</span><select id="includeAssistant"><option value="true" data-i18n="提问与回复">提问与回复</option><option value="false" data-i18n="只看我的提问">只看我的提问</option></select></label>
+        <label class="setting-row"><span data-i18n="外观主题">外观主题</span><select id="theme"><option value="auto" data-i18n="跟随当前网站">跟随当前网站</option><option value="light" data-i18n="浅色">浅色</option><option value="dark" data-i18n="深色">深色</option></select></label>
+        <label class="setting-row"><span data-i18n="时间轴位置">时间轴位置</span><select id="side"><option value="right" data-i18n="页面右侧">页面右侧</option><option value="left" data-i18n="页面左侧">页面左侧</option></select></label>
+        <div class="setting-row last"><label for="showPreview" data-i18n="悬停消息预览">悬停消息预览</label><label class="switch"><input id="showPreview" type="checkbox" aria-label="悬停消息预览" data-i18n-aria="悬停消息预览"><span></span></label></div>
+      </div>
     </section>
     <section id="advanced" role="tabpanel" aria-labelledby="tab-advanced" hidden>
-      <div class="section-title">交互设置</div>
-      <div class="setting-row"><label for="smoothScroll">平滑跳转</label><label class="switch"><input id="smoothScroll" type="checkbox" aria-label="平滑跳转"><span></span></label></div>
-      <div class="setting-row feature-row"><label for="keyboard"><span>页面快捷键</span><small><kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>T / ↑ / ↓</kbd></small></label><label class="switch"><input id="keyboard" type="checkbox" aria-label="页面快捷键"><span></span></label></div>
-      <div class="info-note">保留窄轨道、圆点和悬浮预览。节点很密时，聚焦圆点后可用 ↑ / ↓ 精确选择，再按 Enter 跳转；也可通过目录搜索。</div>
-      <details id="diagnostic-details"><summary>适配与诊断<span>排查识别问题</span></summary><div class="detail-body">
-        <p>平时只跟随你加载的内容，不后台补全。点击旧节点时，自动换页并定位到原网页消息；按 Esc、滚轮或“取消”可停止。只在本页保留索引，切换会话或刷新后重建。</p>
-        <div class="button-row"><button id="rescan" type="button" class="secondary">重新识别页面</button><button id="reset-index" type="button" class="secondary">重建本页索引</button></div>
-        <label class="field">用户消息选择器<input id="customUserSelector" placeholder='例如：[data-user-message-bubble="true"]' spellcheck="false" autocomplete="off" maxlength="1000"></label>
-        <label class="field">助手消息选择器<input id="customAssistantSelector" placeholder="留空使用内置识别器" spellcheck="false" autocomplete="off" maxlength="1000"></label>
-        <button id="save-selectors" type="button" class="secondary full">保存选择器并重新识别</button>
-        <pre id="diagnostics">暂无页面诊断</pre><button id="export-diagnostics" type="button" class="secondary full">导出诊断（不含对话正文）</button>
+      <div class="section-title" data-i18n="交互设置">交互设置</div>
+      <div class="setting-row"><label for="smoothScroll" data-i18n="平滑跳转">平滑跳转</label><label class="switch"><input id="smoothScroll" type="checkbox" aria-label="平滑跳转" data-i18n-aria="平滑跳转"><span></span></label></div>
+      <div class="setting-row feature-row"><label for="keyboard"><span data-i18n="页面快捷键">页面快捷键</span><small><kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>T / ↑ / ↓</kbd></small></label><label class="switch"><input id="keyboard" type="checkbox" aria-label="页面快捷键" data-i18n-aria="页面快捷键"><span></span></label></div>
+      <div class="info-note" data-i18n="单击密集圆点区域可逐组选择附近消息。回复下的「查看章节」定位具体标题；目录底部「导出」保存当前搜索、收藏或附近消息列表。也可用 ↑ / ↓ 选择、Enter 定位。">单击密集圆点区域可逐组选择附近消息。回复下的「查看章节」定位具体标题；目录底部「导出」保存当前搜索、收藏或附近消息列表。也可用 ↑ / ↓ 选择、Enter 定位。</div>
+      <details id="diagnostic-details"><summary><span class="summary-title" data-i18n="适配与诊断">适配与诊断</span><span data-i18n="排查识别问题">排查识别问题</span></summary><div class="detail-body">
+        <p data-i18n="平时只跟随你加载的内容，不后台补全。点击旧节点时，尝试通过当前网站原生滚动或分页定位原消息；按 Esc、滚轮或“取消”可停止。Gemini 不运行 React MAIN 助手。索引仅在本页保留，切换会话或刷新后重建。">平时只跟随你加载的内容，不后台补全。点击旧节点时，尝试通过当前网站原生滚动或分页定位原消息；按 Esc、滚轮或“取消”可停止。Gemini 不运行 React MAIN 助手。索引仅在本页保留，切换会话或刷新后重建。</p>
+        <div class="button-row"><button id="rescan" type="button" class="secondary" data-i18n="重新识别页面">重新识别页面</button><button id="reset-index" type="button" class="secondary" data-i18n="重建本页索引">重建本页索引</button></div>
+        <label class="field"><span data-i18n="用户消息选择器">用户消息选择器</span><input id="customUserSelector" placeholder="留空使用当前网站内置识别器" data-i18n-placeholder="留空使用当前网站内置识别器" spellcheck="false" autocomplete="off" maxlength="1000"></label>
+        <label class="field"><span data-i18n="助手消息选择器">助手消息选择器</span><input id="customAssistantSelector" placeholder="留空使用内置识别器" data-i18n-placeholder="留空使用内置识别器" spellcheck="false" autocomplete="off" maxlength="1000"></label>
+        <button id="save-selectors" type="button" class="secondary full" data-i18n="保存选择器并重新识别">保存选择器并重新识别</button>
+        <pre id="diagnostics">暂无页面诊断</pre><button id="export-diagnostics" type="button" class="secondary full" data-i18n="导出诊断（不含对话正文）">导出诊断（不含对话正文）</button>
       </div></details>
-      <details id="bookmark-details"><summary>本地收藏与备份<span id="bookmark-count">0 条</span></summary><div class="detail-body"><p>只保存标识指纹和收藏时间，不保存聊天正文，不跨浏览器自动同步。</p><div class="button-row"><button id="export-bookmarks" type="button" class="secondary">导出收藏</button><button id="import-bookmarks" type="button" class="secondary">导入收藏</button></div><input id="import-file" type="file" accept="application/json,.json" hidden><button id="clear-bookmarks" type="button" class="danger full">清空所有收藏</button></div></details>
-      <details id="privacy-details"><summary>隐私与权限<span>仅当前会话</span></summary><div class="detail-body"><p>读取当前对话已加载消息、会话路径和必要的点击/滚动/搜索交互，仅用于本地导航。正文只在当前标签页内存；设置及收藏指纹保存在本地。扩展不读取登录令牌、不自行请求会话接口，不把聊天发送给开发者或第三方。</p><p>点击旧节点会按需触发网页原生定位/分页；空闲时不补全历史。这是非官方扩展，页面变化可能影响识别。索引表示本页加载过的消息，不是完整会话备份。</p><p><a href="../privacy.html" target="_blank" rel="noopener noreferrer" class="privacy-link">阅读完整隐私说明 ↗</a></p></div></details>
-      <div class="advanced-footer"><button id="reset-settings" type="button" class="link-button">恢复默认设置</button><button id="open-settings-page" type="button" class="link-button">在标签页打开设置 ↗</button></div>
+      <details id="bookmark-details"><summary><span class="summary-title" data-i18n="本地收藏与备份">本地收藏与备份</span><span id="bookmark-count">0 条</span></summary><div class="detail-body"><p data-i18n="只保存标识指纹和收藏时间，不保存聊天正文。ChatGPT 与 Gemini 收藏隔离，备份继续使用 v1 格式，不跨浏览器自动同步。">只保存标识指纹和收藏时间，不保存聊天正文。ChatGPT 与 Gemini 收藏隔离，备份继续使用 v1 格式，不跨浏览器自动同步。</p><div class="button-row"><button id="export-bookmarks" type="button" class="secondary" data-i18n="导出收藏">导出收藏</button><button id="import-bookmarks" type="button" class="secondary" data-i18n="导入收藏">导入收藏</button></div><input id="import-file" type="file" accept="application/json,.json" hidden><button id="clear-bookmarks" type="button" class="danger full" data-i18n="清空所有收藏">清空所有收藏</button></div></details>
+      <details id="privacy-details"><summary><span class="summary-title" data-i18n="隐私与权限">隐私与权限</span><span data-i18n="仅当前会话">仅当前会话</span></summary><div class="detail-body"><p data-i18n="仅在 ChatGPT 与 Gemini 的支持域名读取当前对话已加载消息、会话路径和必要的点击/滚动/搜索交互，用于本地导航。正文只在当前标签页内存；设置及收藏指纹保存在本地。扩展不读取登录令牌、不自行请求会话接口，不把聊天发送给开发者或第三方。">仅在 ChatGPT 与 Gemini 的支持域名读取当前对话已加载消息、会话路径和必要的点击/滚动/搜索交互，用于本地导航。正文只在当前标签页内存；设置及收藏指纹保存在本地。扩展不读取登录令牌、不自行请求会话接口，不把聊天发送给开发者或第三方。</p><p data-i18n="API 权限只有 storage；支持站点包括 gemini.google.com。点击旧节点才按需尝试原生定位，空闲时不补全历史。索引表示本页加载过的消息，不是完整会话备份。">API 权限只有 storage；支持站点包括 gemini.google.com。点击旧节点才按需尝试原生定位，空闲时不补全历史。索引表示本页加载过的消息，不是完整会话备份。</p><p><a href="../privacy.html" target="_blank" rel="noopener noreferrer" class="privacy-link" data-i18n="完整隐私说明（中文） ↗">完整隐私说明（中文） ↗</a></p></div></details>
+      <div class="advanced-footer"><button id="reset-settings" type="button" class="link-button" data-i18n="恢复默认设置">恢复默认设置</button><button id="open-settings-page" type="button" class="link-button" data-i18n="在标签页打开设置 ↗">在标签页打开设置 ↗</button></div>
     </section>
   </main>
-  <footer class="footer"><span class="privacy-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 3v5c0 5-4 8-8 10-4-2-8-5-8-10V6Z"/><path d="m8 12 3 3 5-6"/></svg>仅当前会话 · 本地索引</span><span>固定时间轴 · 无滑条</span></footer>
+  <footer class="footer"><span class="privacy-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 3v5c0 5-4 8-8 10-4-2-8-5-8-10V6Z"/><path d="m8 12 3 3 5-6"/></svg><span data-i18n="仅当前会话 · 本地索引">仅当前会话 · 本地索引</span></span><span data-i18n="固定时间轴 · 无滑条">固定时间轴 · 无滑条</span></footer>
   <div id="notice" class="notice" role="status" hidden></div>
-  <script src="../src/core.js"></script><script src="popup.js"></script>
+  <script src="../src/i18n.js"></script><script src="i18n.js"></script><script src="../src/core.js"></script><script src="popup.js"></script>
 </body></html>
